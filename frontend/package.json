@@ -10,7 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@coral-xyz/anchor": "^0.31.1",
+    "@solana/wallet-adapter-react": "^0.15.38",
+    "@solana/web3.js": "^1.98.2",
     "@tanstack/react-router": "^1.117.1",
+    "pinata": "^2.2.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
