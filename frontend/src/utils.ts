@@ -17,7 +17,15 @@ export interface MedilockMethods {
   add_record: (recordCounter: number, cid: string, metadata: string) => any;
   request_access: (scope: string, expiration: anchor.BN) => any;
   respond_access: (approved: boolean) => any;
-  register: (did: string, role: any) => any;
+  register: (
+    nik: string, 
+    full_name: string,
+    blood_type: string,
+    birthdate: anchor.BN,
+    gender: any,
+    email: string,
+    phone_number: string
+  ) => any;
   // Add other methods as needed
 }
 
@@ -176,27 +184,67 @@ async function executeTransaction(tx: web3.Transaction, wallet: ReturnType<typeo
 
 // User Registration
 export async function registerUser(
-  wallet: ReturnType<typeof useWallet>, 
-  role: "doctor" | "patient"
-): Promise<{ success: boolean; signature: string }> {
+  wallet: ReturnType<typeof useWallet>,
+  userData?: {
+    nik: string;
+    full_name: string;
+    blood_type: string;
+    birthdate: anchor.BN;
+    gender: any;
+    email: string;
+    phone_number: string;
+  }
+): Promise<{ success: boolean; signature: string; alreadyRegistered?: boolean }> {
   try {
     if (!wallet.publicKey) {
       throw new Error("Wallet not connected");
     }
     
-    console.log('SUI');
-    const provider = createProviderFromWallet(wallet);
-    console.log('SUI', provider);
-    const program = getProgram(provider);
-    console.log('SUI', program);
     // Get user PDA
     const userPDA = getUserPDA(wallet.publicKey);
-    console.log('SUI', userPDA);
+    
+    // Check if user account already exists
+    const connection = getConnection();
+    const accountInfo = await connection.getAccountInfo(userPDA);
+    
+    // If account already exists, return success without registering again
+    if (accountInfo) {
+      console.log("User already registered, account found at:", userPDA.toBase58());
+      return { success: true, signature: "existing_account", alreadyRegistered: true };
+    }
+    
+    console.log('Registering new user...');
+    const provider = createProviderFromWallet(wallet);
+    const program = getProgram(provider);
+    
+    // Default values for registration if not provided
+    const defaultValues = {
+      nik: "123456789012345", // 15 digits
+      full_name: "Patient User",
+      blood_type: "O+",
+      birthdate: new anchor.BN(Math.floor(Date.now() / 1000) - 25 * 365 * 24 * 60 * 60), // 25 years ago
+      gender: { male: {} }, // Default to male
+      email: "user@example.com",
+      phone_number: "08123456789"
+    };
+    
+    // Use provided values or fallback to defaults
+    const {
+      nik, full_name, blood_type, birthdate, gender, email, phone_number
+    } = userData || defaultValues;
     
     // Create instruction using camelCase as in TypeScript
     // @ts-ignore - TypeScript has issues with account names
     const ix = await program.methods
-      .register("", { [role.toLowerCase()]: {} })
+      .register(
+        nik,
+        full_name,
+        blood_type,
+        birthdate,
+        gender,
+        email,
+        phone_number
+      )
       .accounts({
         userAccount: userPDA,
         authority: wallet.publicKey,
@@ -204,13 +252,11 @@ export async function registerUser(
       })
       .instruction();
     
-    console.log('SUI');
     // Create and execute transaction
     const tx = new web3.Transaction().add(ix);
-    console.log('SUI');
     const signature = await executeTransaction(tx, wallet);
     console.log("User registered successfully! Signature:", signature);
-    return { success: true, signature };
+    return { success: true, signature, alreadyRegistered: false };
   } catch (error) {
     console.error("Error registering user:", error);
     throw error;
@@ -347,9 +393,15 @@ export async function addMedicalRecord(
       throw new Error("Wallet not connected");
     }
     
-    // No need to upload to IPFS here as we're passing the CID directly
+    console.log("Adding medical record with:", {
+      doctor: wallet.publicKey.toString(),
+      patient: patientPublicKey,
+      recordCounter,
+      cid
+    });
     
     // Create transaction to record on-chain
+    const connection = getConnection();
     const provider = createProviderFromWallet(wallet);
     const program = getProgram(provider);
     
@@ -359,8 +411,27 @@ export async function addMedicalRecord(
     const doctorPDA = getUserPDA(wallet.publicKey);
     const patientPDA = getUserPDA(patientPubkey);
     const recordPDA = getRecordPDA(patientPubkey, recordCounter);
+    
+    // Check if the doctor account exists
+    const doctorAccount = await connection.getAccountInfo(doctorPDA);
+    if (!doctorAccount) {
+      throw new Error("Doctor account not found. Please register as a doctor first.");
+    }
+    
+    // Check if the patient account exists
+    const patientAccount = await connection.getAccountInfo(patientPDA);
+    if (!patientAccount) {
+      throw new Error("Patient account not found. The patient must register first.");
+    }
+    
+    // Check if the record already exists
+    const recordAccount = await connection.getAccountInfo(recordPDA);
+    if (recordAccount) {
+      throw new Error(`Record with counter ${recordCounter} already exists for this patient. Please use a different counter.`);
+    }
+    
     // Use camelCase for method names to match TypeScript interface
-    // @ts-ignore - TypeScript has issues with account names
+    // and snake_case for the actual program call
     const ix = await program.methods
       .addRecord(recordCounter, cid, metadata || '')
       .accounts({

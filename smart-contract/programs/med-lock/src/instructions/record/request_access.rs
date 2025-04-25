@@ -37,8 +37,8 @@ pub fn request_access(
     let doctor_account = &ctx.accounts.doctor_account;
     let patient_account = &ctx.accounts.patient_account;
 
-    access_request.doctor_did = doctor_account.did.clone();
-    access_request.patient_did = patient_account.did.clone();
+    access_request.doctor_did = doctor_account.full_name.clone();
+    access_request.patient_did = patient_account.full_name.clone();
     access_request.requested_at = Clock::get()?.unix_timestamp;
     access_request.scope = scope;
     access_request.expires_at = expiration;

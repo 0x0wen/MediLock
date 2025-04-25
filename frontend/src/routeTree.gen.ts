@@ -13,9 +13,10 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
+import { Route as RegisterIndexImport } from './routes/register/index'
 import { Route as MarketplaceIndexImport } from './routes/marketplace/index'
-import { Route as LoginIndexImport } from './routes/login/index'
-import { Route as LoginHeheImport } from './routes/login/hehe'
+import { Route as DashboardIndexImport } from './routes/dashboard/index'
+import { Route as RegisterUiImport } from './routes/register/ui'
 import { Route as MarketplacePoolIdIndexImport } from './routes/marketplace/$poolId/index'
 import { Route as DashboardDoctorIndexImport } from './routes/dashboard/doctor/index'
 import { Route as DashboardPatientIdIndexImport } from './routes/dashboard/$patientId/index'
@@ -34,21 +35,27 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const RegisterIndexRoute = RegisterIndexImport.update({
+  id: '/register/',
+  path: '/register/',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const MarketplaceIndexRoute = MarketplaceIndexImport.update({
   id: '/marketplace/',
   path: '/marketplace/',
   getParentRoute: () => rootRoute,
 } as any)
 
-const LoginIndexRoute = LoginIndexImport.update({
-  id: '/login/',
-  path: '/login/',
+const DashboardIndexRoute = DashboardIndexImport.update({
+  id: '/dashboard/',
+  path: '/dashboard/',
   getParentRoute: () => rootRoute,
 } as any)
 
-const LoginHeheRoute = LoginHeheImport.update({
-  id: '/login/hehe',
-  path: '/login/hehe',
+const RegisterUiRoute = RegisterUiImport.update({
+  id: '/register/ui',
+  path: '/register/ui',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -88,18 +95,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutImport
       parentRoute: typeof rootRoute
     }
-    '/login/hehe': {
-      id: '/login/hehe'
-      path: '/login/hehe'
-      fullPath: '/login/hehe'
-      preLoaderRoute: typeof LoginHeheImport
+    '/register/ui': {
+      id: '/register/ui'
+      path: '/register/ui'
+      fullPath: '/register/ui'
+      preLoaderRoute: typeof RegisterUiImport
       parentRoute: typeof rootRoute
     }
-    '/login/': {
-      id: '/login/'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginIndexImport
+    '/dashboard/': {
+      id: '/dashboard/'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardIndexImport
       parentRoute: typeof rootRoute
     }
     '/marketplace/': {
@@ -107,6 +114,13 @@ declare module '@tanstack/react-router' {
       path: '/marketplace'
       fullPath: '/marketplace'
       preLoaderRoute: typeof MarketplaceIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/register/': {
+      id: '/register/'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterIndexImport
       parentRoute: typeof rootRoute
     }
     '/dashboard/$patientId/': {
@@ -138,9 +152,10 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/login/hehe': typeof LoginHeheRoute
-  '/login': typeof LoginIndexRoute
+  '/register/ui': typeof RegisterUiRoute
+  '/dashboard': typeof DashboardIndexRoute
   '/marketplace': typeof MarketplaceIndexRoute
+  '/register': typeof RegisterIndexRoute
   '/dashboard/$patientId': typeof DashboardPatientIdIndexRoute
   '/dashboard/doctor': typeof DashboardDoctorIndexRoute
   '/marketplace/$poolId': typeof MarketplacePoolIdIndexRoute
@@ -149,9 +164,10 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/login/hehe': typeof LoginHeheRoute
-  '/login': typeof LoginIndexRoute
+  '/register/ui': typeof RegisterUiRoute
+  '/dashboard': typeof DashboardIndexRoute
   '/marketplace': typeof MarketplaceIndexRoute
+  '/register': typeof RegisterIndexRoute
   '/dashboard/$patientId': typeof DashboardPatientIdIndexRoute
   '/dashboard/doctor': typeof DashboardDoctorIndexRoute
   '/marketplace/$poolId': typeof MarketplacePoolIdIndexRoute
@@ -161,9 +177,10 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/login/hehe': typeof LoginHeheRoute
-  '/login/': typeof LoginIndexRoute
+  '/register/ui': typeof RegisterUiRoute
+  '/dashboard/': typeof DashboardIndexRoute
   '/marketplace/': typeof MarketplaceIndexRoute
+  '/register/': typeof RegisterIndexRoute
   '/dashboard/$patientId/': typeof DashboardPatientIdIndexRoute
   '/dashboard/doctor/': typeof DashboardDoctorIndexRoute
   '/marketplace/$poolId/': typeof MarketplacePoolIdIndexRoute
@@ -174,9 +191,10 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
-    | '/login/hehe'
-    | '/login'
+    | '/register/ui'
+    | '/dashboard'
     | '/marketplace'
+    | '/register'
     | '/dashboard/$patientId'
     | '/dashboard/doctor'
     | '/marketplace/$poolId'
@@ -184,9 +202,10 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
-    | '/login/hehe'
-    | '/login'
+    | '/register/ui'
+    | '/dashboard'
     | '/marketplace'
+    | '/register'
     | '/dashboard/$patientId'
     | '/dashboard/doctor'
     | '/marketplace/$poolId'
@@ -194,9 +213,10 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
-    | '/login/hehe'
-    | '/login/'
+    | '/register/ui'
+    | '/dashboard/'
     | '/marketplace/'
+    | '/register/'
     | '/dashboard/$patientId/'
     | '/dashboard/doctor/'
     | '/marketplace/$poolId/'
@@ -206,9 +226,10 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  LoginHeheRoute: typeof LoginHeheRoute
-  LoginIndexRoute: typeof LoginIndexRoute
+  RegisterUiRoute: typeof RegisterUiRoute
+  DashboardIndexRoute: typeof DashboardIndexRoute
   MarketplaceIndexRoute: typeof MarketplaceIndexRoute
+  RegisterIndexRoute: typeof RegisterIndexRoute
   DashboardPatientIdIndexRoute: typeof DashboardPatientIdIndexRoute
   DashboardDoctorIndexRoute: typeof DashboardDoctorIndexRoute
   MarketplacePoolIdIndexRoute: typeof MarketplacePoolIdIndexRoute
@@ -217,9 +238,10 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  LoginHeheRoute: LoginHeheRoute,
-  LoginIndexRoute: LoginIndexRoute,
+  RegisterUiRoute: RegisterUiRoute,
+  DashboardIndexRoute: DashboardIndexRoute,
   MarketplaceIndexRoute: MarketplaceIndexRoute,
+  RegisterIndexRoute: RegisterIndexRoute,
   DashboardPatientIdIndexRoute: DashboardPatientIdIndexRoute,
   DashboardDoctorIndexRoute: DashboardDoctorIndexRoute,
   MarketplacePoolIdIndexRoute: MarketplacePoolIdIndexRoute,
@@ -237,9 +259,10 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/about",
-        "/login/hehe",
-        "/login/",
+        "/register/ui",
+        "/dashboard/",
         "/marketplace/",
+        "/register/",
         "/dashboard/$patientId/",
         "/dashboard/doctor/",
         "/marketplace/$poolId/"
@@ -251,14 +274,17 @@ export const routeTree = rootRoute
     "/about": {
       "filePath": "about.tsx"
     },
-    "/login/hehe": {
-      "filePath": "login/hehe.tsx"
+    "/register/ui": {
+      "filePath": "register/ui.tsx"
     },
-    "/login/": {
-      "filePath": "login/index.tsx"
+    "/dashboard/": {
+      "filePath": "dashboard/index.tsx"
     },
     "/marketplace/": {
       "filePath": "marketplace/index.tsx"
+    },
+    "/register/": {
+      "filePath": "register/index.tsx"
     },
     "/dashboard/$patientId/": {
       "filePath": "dashboard/$patientId/index.tsx"

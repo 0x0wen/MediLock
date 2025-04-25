@@ -8,9 +8,10 @@ import {
     WalletMultiButton
 } from '@solana/wallet-adapter-react-ui';
 import { clusterApiUrl } from '@solana/web3.js';
-
+import logo from '../assets/logo.png';
 // Default styles that can be overridden by your app
 import '@solana/wallet-adapter-react-ui/styles.css';
+import { Link } from '@tanstack/react-router';
 
 export const Wallet: FC<{children: React.ReactNode}> = ({children}) => {
     // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
@@ -43,8 +44,13 @@ export const Wallet: FC<{children: React.ReactNode}> = ({children}) => {
         <ConnectionProvider endpoint={endpoint}>
             <WalletProvider wallets={wallets} autoConnect>
                 <WalletModalProvider>
+                    <div className='flex flex-row justify-between py-3'>
+                        <Link to="/">
+                            <img src={logo} alt="logo" className='h-10' />
+                        </Link>
+                        <div className='flex flex-row gap-2'>
                     <WalletMultiButton />
-                    <WalletDisconnectButton />
+                    <WalletDisconnectButton /></div></div>
                     {children}
                     { /* Your app's components go here, nested within the context providers. */ }
                 </WalletModalProvider>

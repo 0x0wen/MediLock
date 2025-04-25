@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { 
   uploadToIPFS, 
@@ -176,7 +176,7 @@ function UploadPage() {
       // Could add additional checks here (e.g., check if the public key is registered as a patient)
       // For now, we'll just find the next available counter
       const counter = await findNextAvailableCounter(patientPubkey);
-      setPatientRecordCounter(counter);
+      setPatientRecordCounter(counter || 0);
       
       setValidPatient(true);
       setIsPatientMode(true);
@@ -215,8 +215,8 @@ function UploadPage() {
       addLog(`Connected to wallet: ${publicKeyStr.slice(0, 6)}...${publicKeyStr.slice(-4)}`, 'success');
     } else {
       // Not connected, redirect to registration
-      addLog("No wallet connected. Redirecting to registration page...", 'warning');
-      navigate({ to: '/login' });
+      addLog("No wallet connected. Redirecting to home page...", 'warning');
+      navigate({ to: '/' });
     }
   };
 
@@ -383,26 +383,27 @@ function UploadPage() {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!walletAdapter.publicKey || !patientPublicKey) {
+      addLog("Error: Wallet not connected or patient not selected.");
+      return;
+    }
+
+    if (!inputText.trim()) {
+      addLog("Error: FHIR data cannot be empty.");
+      return;
+    }
+
     try {
-      // Check if user is a doctor before proceeding
-      if (!isDoctor) {
-        throw new Error('You must be registered as a doctor to upload medical records');
-      }
-      
-      setError('');
       setLoading(true);
+      setError('');
       setUploadResponse(null);
       setDecryptedData(null);
       
-      addLog("Starting FHIR data processing...");
+      addLog("Starting upload process...");
       
       // Validate input
-      if (!inputText) {
-        throw new Error('Please enter FHIR data');
-      }
-      
-      // Validate JSON
       let parsedJson;
       try {
         parsedJson = JSON.parse(inputText);
@@ -610,20 +611,6 @@ function UploadPage() {
           </div>
         ) : (
           <div>
-            {/* Doctor Role Warning */}
-            {!isDoctor && !checkingRole && (
-              <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6">
-                <p className="font-bold">Not Registered as Doctor</p>
-                <p>You need to be registered as a doctor to upload medical records.</p>
-                <Link
-                  to="/login"
-                  className="mt-2 inline-block px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md"
-                >
-                  Register as Doctor
-                </Link>
-              </div>
-            )}
-            
             {/* Patient Search Section */}
             {isDoctor && (
               <div className="bg-white rounded-lg shadow-md p-6 mb-6">

@@ -15,7 +15,13 @@ describe("Register Instruction Tests", () => {
   const authority = provider.wallet.publicKey;
   
   // Test data
-  const testDid = "did:example:123456789abcdef";
+  const testNik = "1234567890123456";
+  const testFullName = "John Doe";
+  const testBloodType = "A+";
+  const testBirthdate = 946684800000; // January 1, 2000
+  const testGender = { male: {} }; // Can be { male: {} }, { female: {} }, or { other: {} }
+  const testEmail = "john.doe@example.com";
+  const testPhoneNumber = "0811234567890";
   const userRole = { patient: {} }; // You can also test with { doctor: {} }
 
   // Calculate PDA for user account
@@ -36,11 +42,20 @@ describe("Register Instruction Tests", () => {
         // Account doesn't exist, proceed with test
       }
       const tx = await program.methods
-        .register(testDid, userRole)
+        .register(
+          testNik,
+          testFullName,
+          testBloodType,
+          new anchor.BN(testBirthdate),
+          testGender,
+          testEmail,
+          testPhoneNumber,
+          userRole
+        )
         .accounts({
-          user_account: userPDA,
+          userAccount: userPDA,
           authority: authority,
-          system_program: anchor.web3.SystemProgram.programId
+          systemProgram: anchor.web3.SystemProgram.programId
         })
         .rpc();
   
@@ -50,30 +65,39 @@ describe("Register Instruction Tests", () => {
       const userAccount = await program.account.user.fetch(userPDA);
   
       // Verify the account data
-      expect(userAccount.did).to.equal(testDid);
+      expect(userAccount.nik).to.equal(testNik);
+      expect(userAccount.fullName).to.equal(testFullName);
+      expect(userAccount.bloodType).to.equal(testBloodType);
+      expect(userAccount.birthdate.toString()).to.equal(testBirthdate.toString());
+      expect(JSON.stringify(userAccount.gender)).to.equal(JSON.stringify(testGender));
+      expect(userAccount.email).to.equal(testEmail);
+      expect(userAccount.phoneNumber).to.equal(testPhoneNumber);
       expect(userAccount.publicKey.toString()).to.equal(authority.toString());
       expect(JSON.stringify(userAccount.role)).to.equal(JSON.stringify(userRole));
       expect(userAccount.createdAt.toNumber()).to.be.greaterThan(0);
     } catch (e) {
-      if (e.toString().includes("UserAlreadyRegistered")) {
-        console.log("Test skipped: User already registered");
-        // Skip this test or handle it accordingly
-        return;
-      } else {
-        console.error("Unexpected error:", e);
-        throw e;
-      }
+      console.error("Error in registration test:", e);
+      throw e;
     }
   });
 
   it("Should fail when trying to register twice with same authority", async () => {
     try {
       await program.methods
-        .register("did:example:duplicate", userRole)
+        .register(
+          "9876543210987654",
+          "Jane Doe",
+          "O-",
+          new anchor.BN(978307200000), // January 1, 2001
+          { female: {} },
+          "jane.doe@example.com",
+          "0819876543210",
+          userRole
+        )
         .accounts({
-          user_account: userPDA,  // Fixed: using snake_case
+          userAccount: userPDA,
           authority: authority,
-          system_program: anchor.web3.SystemProgram.programId  // Fixed: using snake_case
+          systemProgram: anchor.web3.SystemProgram.programId
         })
         .rpc();
       
@@ -102,21 +126,41 @@ describe("Register Instruction Tests", () => {
       program.programId
     );
     
-    const doctorDid = "did:example:doctor123";
+    const doctorNik = "9876543210123456";
+    const doctorFullName = "Dr. Jane Smith";
+    const doctorBloodType = "B+";
+    const doctorBirthdate = 915148800000; // January 1, 1999
+    const doctorGender = { female: {} };
+    const doctorEmail = "dr.smith@hospital.com";
+    const doctorPhoneNumber = "0811122334455";
+    
     await program.methods
-      .register(doctorDid, doctorRole)
+      .register(
+        doctorNik,
+        doctorFullName,
+        doctorBloodType,
+        new anchor.BN(doctorBirthdate),
+        doctorGender,
+        doctorEmail,
+        doctorPhoneNumber,
+        doctorRole
+      )
       .accounts({
-        user_account: doctorPDA,  // Fixed: using snake_case
+        userAccount: doctorPDA,
         authority: doctorWallet.publicKey,
-        system_program: anchor.web3.SystemProgram.programId  // Fixed: using snake_case
+        systemProgram: anchor.web3.SystemProgram.programId
       })
       .signers([doctorWallet])
       .rpc();
     
     const doctorAccount = await program.account.user.fetch(doctorPDA);
-    console.log(JSON.stringify(doctorAccount))
-    console.log(JSON.stringify(doctorDid))
-    expect(doctorAccount.did).to.equal(doctorDid);
+    expect(doctorAccount.nik).to.equal(doctorNik);
+    expect(doctorAccount.fullName).to.equal(doctorFullName);
+    expect(doctorAccount.bloodType).to.equal(doctorBloodType);
+    expect(doctorAccount.birthdate.toString()).to.equal(doctorBirthdate.toString());
+    expect(JSON.stringify(doctorAccount.gender)).to.equal(JSON.stringify(doctorGender));
+    expect(doctorAccount.email).to.equal(doctorEmail);
+    expect(doctorAccount.phoneNumber).to.equal(doctorPhoneNumber);
     expect(JSON.stringify(doctorAccount.role)).to.equal(JSON.stringify(doctorRole));
   });
 });

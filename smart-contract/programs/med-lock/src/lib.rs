@@ -19,8 +19,17 @@ pub mod medilock {
         initialize::handler(ctx)
     }
     
-    pub fn register(ctx: Context<Register>, did: String, role: UserRole) -> Result<()> {
-        register::register(ctx, did, role)
+    pub fn register(
+        ctx: Context<Register>, 
+        nik: String, 
+        full_name: String,
+        blood_type: String,
+        birthdate: i64,
+        gender: Gender,
+        email: String,
+        phone_number: String
+    ) -> Result<()> {
+        register::register(ctx, nik, full_name, blood_type, birthdate, gender, email, phone_number)
     }
 
     pub fn withdraw(ctx: Context<Withdraw>) -> Result<()> {

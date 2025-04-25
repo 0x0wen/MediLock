@@ -4,9 +4,19 @@ use anchor_lang::solana_program::pubkey::Pubkey;
 #[account]
 #[derive(InitSpace)]
 pub struct User {
-    #[max_len(64)]
-    pub did: String,
     pub public_key: Pubkey,
+    #[max_len(16)]
+    pub nik: String,
+    #[max_len(64)]
+    pub full_name: String,
+    #[max_len(3)]
+    pub blood_type: String,
+    pub birthdate: i64,
+    pub gender: Gender,
+    #[max_len(64)]
+    pub email: String,
+    #[max_len(16)]
+    pub phone_number: String,
     pub role: UserRole,
     pub created_at: i64,
 }
@@ -83,6 +93,13 @@ pub enum UserRole {
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Debug, InitSpace)]
+pub enum Gender {
+    Male,
+    Female,
+    Other,
+}
+
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Debug, InitSpace)]
 pub enum RequestStatus {
     Pending,
     Approved,
@@ -91,8 +108,10 @@ pub enum RequestStatus {
 
 #[event]
 pub struct UserRegistered {
-    pub did: String,
+    pub nik: String,
+    pub full_name: String,
     pub role: UserRole,
+    pub email: String,
     pub timestamp: i64,
 }
 

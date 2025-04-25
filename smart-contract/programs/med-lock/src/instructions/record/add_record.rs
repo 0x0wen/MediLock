@@ -39,8 +39,8 @@ pub fn add_record(
     let patient_account = &ctx.accounts.patient_account;
 
     record_account.cid = cid;
-    record_account.doctor_did = doctor_account.did.clone();
-    record_account.patient_did = patient_account.did.clone();
+    record_account.doctor_did = doctor_account.full_name.clone();
+    record_account.patient_did = patient_account.full_name.clone();
     record_account.timestamp = Clock::get()?.unix_timestamp;
     record_account.metadata = metadata;
 

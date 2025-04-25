@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use crate::{state::{User, UserRegistered, UserRole}, USER_SEED};
+use crate::{state::{User, UserRegistered, UserRole, Gender}, USER_SEED};
 
 #[derive(Accounts)]
 pub struct Register<'info> {
@@ -20,20 +20,33 @@ pub struct Register<'info> {
 
 pub fn register(
     ctx: Context<Register>,
-    did: String,
-    role: UserRole,
+    nik: String,
+    full_name: String,
+    blood_type: String,
+    birthdate: i64,
+    gender: Gender,
+    email: String,
+    phone_number: String,
 ) -> Result<()> {
     let user_account = &mut ctx.accounts.user_account;
     let authority = &ctx.accounts.authority;
 
-    user_account.did = did;
     user_account.public_key = authority.key();
-    user_account.role = role;
+    user_account.nik = nik.clone();
+    user_account.full_name = full_name.clone();
+    user_account.blood_type = blood_type;
+    user_account.birthdate = birthdate;
+    user_account.gender = gender;
+    user_account.email = email.clone();
+    user_account.phone_number = phone_number;
+    user_account.role = UserRole::Patient;
     user_account.created_at = Clock::get()?.unix_timestamp;
 
     emit!(UserRegistered {
-        did: user_account.did.clone(),
+        nik,
+        full_name,
         role: user_account.role.clone(),
+        email,
         timestamp: user_account.created_at,
     });
 
