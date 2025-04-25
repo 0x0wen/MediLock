@@ -9,7 +9,7 @@ export const Route = createFileRoute('/login/')({
 
 function RegistrationPage() {
   // Replace direct wallet state with useWallet hook
-  const { publicKey, signTransaction, signAllTransactions, connected, connect, disconnect } = useWallet();
+  const { publicKey, signTransaction, signAllTransactions, connected, connect, disconnect, wallet } = useWallet();
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -133,7 +133,7 @@ function RegistrationPage() {
                   disabled={loading}
                   className="w-full px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-medium rounded-md disabled:opacity-50"
                 >
-                  {loading ? 'Registering...' : 'Register as Patient'}
+                  {loading ? 'Registering...' : 'Register as Patientz'}
                 </button>
               ) : (
                 <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">

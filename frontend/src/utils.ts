@@ -5,10 +5,10 @@
 import * as web3 from '@solana/web3.js';
 import * as anchor from '@coral-xyz/anchor';
 import { useWallet } from '@solana/wallet-adapter-react';
-import type { Medilock } from './medilock'; // Import the type
+import { Medilock, IDL } from './medilock'; // Import the type
 import { PinataSDK } from 'pinata';
 import { Buffer } from 'buffer';
-import { Program } from '@coral-xyz/anchor';
+import {  Program, AnchorProvider, IdlAccounts } from '@coral-xyz/anchor';
 // Import the IDL from JSON file
 import idl from './idl/medilock.json';
 
@@ -46,13 +46,21 @@ export function getConnection(): web3.Connection {
   }
   return connection;
 }
-console.log('idl', idl);
-console.log('PROGRAM_ID', PROGRAM_ID);  
-console.log('connection', connection);
-// Define program type
-const program = new Program<Medilock>(
-      idl as Medilock);
 
+// Define program type
+
+export function getProgram(provider: AnchorProvider) {
+  try {
+    // Use the latest Anchor package which handles IDL parsing better
+    const programId = new web3.PublicKey("BqwVrtrJvBw5GDv8gJkyJpHp1BQc9sq1DexacBNPC3tB");
+    const program = new Program(IDL, provider);
+    
+    return program;
+  } catch (error) {
+    console.error('Error initializing program:', error);
+    throw error;
+  }
+}
 // PDA utility functions (moved from backend)
 export function getUserPDA(publicKey: web3.PublicKey): web3.PublicKey {
   return web3.PublicKey.findProgramAddressSync(
@@ -63,7 +71,7 @@ export function getUserPDA(publicKey: web3.PublicKey): web3.PublicKey {
 
 export function getRecordPDA(patientPublicKey: web3.PublicKey, counter: number): web3.PublicKey {
   return web3.PublicKey.findProgramAddressSync(
-    [RECORD_SEED, patientPublicKey.toBuffer(), Buffer.from([counter])],
+    [RECORD_SEED, patientPublicKey.toBuffer(), Buffer.from([15])],
     PROGRAM_ID
   )[0];
 }
@@ -415,9 +423,10 @@ export async function getAccessRequests(
 // Additional helper for airdropping SOL for testing (Devnet only)
 export async function requestAirdrop(
   publicKey: web3.PublicKey, 
-  amount: number = 1
+  amount: number = 1000
 ): Promise<string> {
   try {
+    console.log('requestAirdrop', publicKey.toBase58(), amount);
     const connection = getConnection();
     const signature = await connection.requestAirdrop(
       publicKey,
@@ -430,7 +439,7 @@ export async function requestAirdrop(
       lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
       signature: signature,
     });
-    
+    console.log('requestAirdrop', signature);
     return signature;
   } catch (error) {
     console.error("Error requesting airdrop:", error);

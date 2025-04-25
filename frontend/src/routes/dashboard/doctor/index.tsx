@@ -13,6 +13,7 @@ export const Route = createFileRoute('/dashboard/doctor/')({
 function UploadPage() {
   const navigate = useNavigate();
   const { publicKey, signMessage, signTransaction, signAllTransactions, connected, disconnect } = useWallet();
+  const walletAdapter = useWallet();
   const [inputText, setInputText] = useState('');
   const [uploadResponse, setUploadResponse] = useState<{
     ipfs: { hash: string; url: string };
@@ -65,6 +66,7 @@ function UploadPage() {
   };
 
   const checkWalletConnection = () => {
+    console.log('checkWalletConnection', connected, publicKey);
     if (connected && publicKey) {
       const publicKeyStr = publicKey.toString();
       addLog(`Connected to wallet: ${publicKeyStr.slice(0, 6)}...${publicKeyStr.slice(-4)}`, 'success');
@@ -301,9 +303,6 @@ function UploadPage() {
       // 4. Add the medical record to blockchain
       addLog("Step 4: Recording medical record on Solana blockchain...");
       
-      // Use wallet adapter directly from useWallet hook
-      const walletAdapter = useWallet();
-      
       const result = await addMedicalRecord(
         walletAdapter,
         publicKeyStr, // In this case, patient is the same as the uploader
@@ -311,7 +310,7 @@ function UploadPage() {
         ipfsResponse.cid,
         0 // This would normally be incremented for each patient record
       );
-      
+      console.log('result', result);
       // 5. Set the response
       const uploadResult = {
         ipfs: {
