@@ -14,6 +14,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
 import { Route as MarketplaceIndexImport } from './routes/marketplace/index'
+import { Route as LoginIndexImport } from './routes/login/index'
 import { Route as DashboardIndexImport } from './routes/dashboard/index'
 import { Route as MarketplacePoolIdIndexImport } from './routes/marketplace/$poolId/index'
 import { Route as DashboardPatientIdIndexImport } from './routes/dashboard/$patientId/index'
@@ -35,6 +36,12 @@ const IndexRoute = IndexImport.update({
 const MarketplaceIndexRoute = MarketplaceIndexImport.update({
   id: '/marketplace/',
   path: '/marketplace/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const LoginIndexRoute = LoginIndexImport.update({
+  id: '/login/',
+  path: '/login/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -81,6 +88,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexImport
       parentRoute: typeof rootRoute
     }
+    '/login/': {
+      id: '/login/'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/marketplace/': {
       id: '/marketplace/'
       path: '/marketplace'
@@ -111,6 +125,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/login': typeof LoginIndexRoute
   '/marketplace': typeof MarketplaceIndexRoute
   '/dashboard/$patientId': typeof DashboardPatientIdIndexRoute
   '/marketplace/$poolId': typeof MarketplacePoolIdIndexRoute
@@ -120,6 +135,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/login': typeof LoginIndexRoute
   '/marketplace': typeof MarketplaceIndexRoute
   '/dashboard/$patientId': typeof DashboardPatientIdIndexRoute
   '/marketplace/$poolId': typeof MarketplacePoolIdIndexRoute
@@ -130,6 +146,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/login/': typeof LoginIndexRoute
   '/marketplace/': typeof MarketplaceIndexRoute
   '/dashboard/$patientId/': typeof DashboardPatientIdIndexRoute
   '/marketplace/$poolId/': typeof MarketplacePoolIdIndexRoute
@@ -141,6 +158,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/dashboard'
+    | '/login'
     | '/marketplace'
     | '/dashboard/$patientId'
     | '/marketplace/$poolId'
@@ -149,6 +167,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/dashboard'
+    | '/login'
     | '/marketplace'
     | '/dashboard/$patientId'
     | '/marketplace/$poolId'
@@ -157,6 +176,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/dashboard/'
+    | '/login/'
     | '/marketplace/'
     | '/dashboard/$patientId/'
     | '/marketplace/$poolId/'
@@ -167,6 +187,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
+  LoginIndexRoute: typeof LoginIndexRoute
   MarketplaceIndexRoute: typeof MarketplaceIndexRoute
   DashboardPatientIdIndexRoute: typeof DashboardPatientIdIndexRoute
   MarketplacePoolIdIndexRoute: typeof MarketplacePoolIdIndexRoute
@@ -176,6 +197,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   DashboardIndexRoute: DashboardIndexRoute,
+  LoginIndexRoute: LoginIndexRoute,
   MarketplaceIndexRoute: MarketplaceIndexRoute,
   DashboardPatientIdIndexRoute: DashboardPatientIdIndexRoute,
   MarketplacePoolIdIndexRoute: MarketplacePoolIdIndexRoute,
@@ -194,6 +216,7 @@ export const routeTree = rootRoute
         "/",
         "/about",
         "/dashboard/",
+        "/login/",
         "/marketplace/",
         "/dashboard/$patientId/",
         "/marketplace/$poolId/"
@@ -207,6 +230,9 @@ export const routeTree = rootRoute
     },
     "/dashboard/": {
       "filePath": "dashboard/index.tsx"
+    },
+    "/login/": {
+      "filePath": "login/index.tsx"
     },
     "/marketplace/": {
       "filePath": "marketplace/index.tsx"
