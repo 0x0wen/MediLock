@@ -15,6 +15,7 @@ import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
 import { Route as MarketplaceIndexImport } from './routes/marketplace/index'
 import { Route as LoginIndexImport } from './routes/login/index'
+import { Route as LoginHeheImport } from './routes/login/hehe'
 import { Route as MarketplacePoolIdIndexImport } from './routes/marketplace/$poolId/index'
 import { Route as DashboardDoctorIndexImport } from './routes/dashboard/doctor/index'
 import { Route as DashboardPatientIdIndexImport } from './routes/dashboard/$patientId/index'
@@ -42,6 +43,12 @@ const MarketplaceIndexRoute = MarketplaceIndexImport.update({
 const LoginIndexRoute = LoginIndexImport.update({
   id: '/login/',
   path: '/login/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const LoginHeheRoute = LoginHeheImport.update({
+  id: '/login/hehe',
+  path: '/login/hehe',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -79,6 +86,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutImport
+      parentRoute: typeof rootRoute
+    }
+    '/login/hehe': {
+      id: '/login/hehe'
+      path: '/login/hehe'
+      fullPath: '/login/hehe'
+      preLoaderRoute: typeof LoginHeheImport
       parentRoute: typeof rootRoute
     }
     '/login/': {
@@ -124,6 +138,7 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/login/hehe': typeof LoginHeheRoute
   '/login': typeof LoginIndexRoute
   '/marketplace': typeof MarketplaceIndexRoute
   '/dashboard/$patientId': typeof DashboardPatientIdIndexRoute
@@ -134,6 +149,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/login/hehe': typeof LoginHeheRoute
   '/login': typeof LoginIndexRoute
   '/marketplace': typeof MarketplaceIndexRoute
   '/dashboard/$patientId': typeof DashboardPatientIdIndexRoute
@@ -145,6 +161,7 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/login/hehe': typeof LoginHeheRoute
   '/login/': typeof LoginIndexRoute
   '/marketplace/': typeof MarketplaceIndexRoute
   '/dashboard/$patientId/': typeof DashboardPatientIdIndexRoute
@@ -157,6 +174,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/login/hehe'
     | '/login'
     | '/marketplace'
     | '/dashboard/$patientId'
@@ -166,6 +184,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/login/hehe'
     | '/login'
     | '/marketplace'
     | '/dashboard/$patientId'
@@ -175,6 +194,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/login/hehe'
     | '/login/'
     | '/marketplace/'
     | '/dashboard/$patientId/'
@@ -186,6 +206,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  LoginHeheRoute: typeof LoginHeheRoute
   LoginIndexRoute: typeof LoginIndexRoute
   MarketplaceIndexRoute: typeof MarketplaceIndexRoute
   DashboardPatientIdIndexRoute: typeof DashboardPatientIdIndexRoute
@@ -196,6 +217,7 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  LoginHeheRoute: LoginHeheRoute,
   LoginIndexRoute: LoginIndexRoute,
   MarketplaceIndexRoute: MarketplaceIndexRoute,
   DashboardPatientIdIndexRoute: DashboardPatientIdIndexRoute,
@@ -215,6 +237,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/about",
+        "/login/hehe",
         "/login/",
         "/marketplace/",
         "/dashboard/$patientId/",
@@ -227,6 +250,9 @@ export const routeTree = rootRoute
     },
     "/about": {
       "filePath": "about.tsx"
+    },
+    "/login/hehe": {
+      "filePath": "login/hehe.tsx"
     },
     "/login/": {
       "filePath": "login/index.tsx"

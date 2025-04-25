@@ -71,7 +71,7 @@ export function getUserPDA(publicKey: web3.PublicKey): web3.PublicKey {
 
 export function getRecordPDA(patientPublicKey: web3.PublicKey, counter: number): web3.PublicKey {
   return web3.PublicKey.findProgramAddressSync(
-    [RECORD_SEED, patientPublicKey.toBuffer(), Buffer.from([15])],
+    [RECORD_SEED, patientPublicKey.toBuffer(), Buffer.from([counter])],
     PROGRAM_ID
   )[0];
 }
@@ -98,6 +98,55 @@ export function createProviderFromWallet(wallet: ReturnType<typeof useWallet>): 
     } as anchor.Wallet,
     { commitment: 'confirmed' }
   );
+}
+
+// Function to check if a wallet is registered as a doctor
+export async function checkIsDoctor(walletPublicKey: web3.PublicKey): Promise<boolean> {
+  try {
+    if (!walletPublicKey) {
+      return false;
+    }
+    
+    const connection = getConnection();
+    const userPDA = getUserPDA(walletPublicKey);
+    
+    // Get account info from the blockchain
+    const accountInfo = await connection.getAccountInfo(userPDA);
+    
+    // If account doesn't exist, user is not registered
+    if (!accountInfo) {
+      console.log("User account not found");
+      return false;
+    }
+    
+    // This is a simplified check - in a real app, you'd properly deserialize the account data
+    // For now, we'll check if the account exists and return true to allow testing
+    // In a production app, you would deserialize the account data and check the role field
+    
+    // Create a provider and program instance to properly deserialize the account
+    const provider = new anchor.AnchorProvider(
+      connection,
+      { publicKey: walletPublicKey } as anchor.Wallet,
+      { commitment: 'confirmed' }
+    );
+    
+    const program = new Program(IDL, provider);
+    
+    try {
+      // Try to fetch and deserialize the account
+      const userAccount = await program.account.user.fetch(userPDA);
+      console.log('userAccount', userAccount);
+      // Check if the role is doctor
+      // The role field is an enum in the IDL, so we need to check if it has a 'doctor' property
+      return userAccount.role && Object.keys(userAccount.role).includes('doctor');
+    } catch (e) {
+      console.error("Error deserializing user account:", e);
+      return false;
+    }
+  } catch (error) {
+    console.error("Error checking doctor status:", error);
+    return false;
+  }
 }
 
 // Common function to execute a transaction
@@ -310,7 +359,6 @@ export async function addMedicalRecord(
     const doctorPDA = getUserPDA(wallet.publicKey);
     const patientPDA = getUserPDA(patientPubkey);
     const recordPDA = getRecordPDA(patientPubkey, recordCounter);
-    
     // Use camelCase for method names to match TypeScript interface
     // @ts-ignore - TypeScript has issues with account names
     const ix = await program.methods
