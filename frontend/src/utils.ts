@@ -78,8 +78,12 @@ export function getUserPDA(publicKey: web3.PublicKey): web3.PublicKey {
 }
 
 export function getRecordPDA(patientPublicKey: web3.PublicKey, counter: number): web3.PublicKey {
+  // First derive the patient's account PDA
+  const patientAccountPDA = getUserPDA(patientPublicKey);
+  
+  // Then use the patient account PDA in the record PDA derivation
   return web3.PublicKey.findProgramAddressSync(
-    [RECORD_SEED, patientPublicKey.toBuffer(), Buffer.from([counter])],
+    [RECORD_SEED, patientAccountPDA.toBuffer(), Buffer.from([counter])],
     PROGRAM_ID
   )[0];
 }

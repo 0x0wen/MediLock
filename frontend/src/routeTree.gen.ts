@@ -16,10 +16,8 @@ import { Route as IndexImport } from './routes/index'
 import { Route as RegisterIndexImport } from './routes/register/index'
 import { Route as MarketplaceIndexImport } from './routes/marketplace/index'
 import { Route as DashboardIndexImport } from './routes/dashboard/index'
-import { Route as RegisterUiImport } from './routes/register/ui'
 import { Route as MarketplacePoolIdIndexImport } from './routes/marketplace/$poolId/index'
-import { Route as DashboardDoctorIndexImport } from './routes/dashboard/doctor/index'
-import { Route as DashboardPatientIdIndexImport } from './routes/dashboard/$patientId/index'
+import { Route as DashboardAddIndexImport } from './routes/dashboard/add/index'
 
 // Create/Update Routes
 
@@ -53,27 +51,15 @@ const DashboardIndexRoute = DashboardIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const RegisterUiRoute = RegisterUiImport.update({
-  id: '/register/ui',
-  path: '/register/ui',
-  getParentRoute: () => rootRoute,
-} as any)
-
 const MarketplacePoolIdIndexRoute = MarketplacePoolIdIndexImport.update({
   id: '/marketplace/$poolId/',
   path: '/marketplace/$poolId/',
   getParentRoute: () => rootRoute,
 } as any)
 
-const DashboardDoctorIndexRoute = DashboardDoctorIndexImport.update({
-  id: '/dashboard/doctor/',
-  path: '/dashboard/doctor/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const DashboardPatientIdIndexRoute = DashboardPatientIdIndexImport.update({
-  id: '/dashboard/$patientId/',
-  path: '/dashboard/$patientId/',
+const DashboardAddIndexRoute = DashboardAddIndexImport.update({
+  id: '/dashboard/add/',
+  path: '/dashboard/add/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -93,13 +79,6 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutImport
-      parentRoute: typeof rootRoute
-    }
-    '/register/ui': {
-      id: '/register/ui'
-      path: '/register/ui'
-      fullPath: '/register/ui'
-      preLoaderRoute: typeof RegisterUiImport
       parentRoute: typeof rootRoute
     }
     '/dashboard/': {
@@ -123,18 +102,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterIndexImport
       parentRoute: typeof rootRoute
     }
-    '/dashboard/$patientId/': {
-      id: '/dashboard/$patientId/'
-      path: '/dashboard/$patientId'
-      fullPath: '/dashboard/$patientId'
-      preLoaderRoute: typeof DashboardPatientIdIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/dashboard/doctor/': {
-      id: '/dashboard/doctor/'
-      path: '/dashboard/doctor'
-      fullPath: '/dashboard/doctor'
-      preLoaderRoute: typeof DashboardDoctorIndexImport
+    '/dashboard/add/': {
+      id: '/dashboard/add/'
+      path: '/dashboard/add'
+      fullPath: '/dashboard/add'
+      preLoaderRoute: typeof DashboardAddIndexImport
       parentRoute: typeof rootRoute
     }
     '/marketplace/$poolId/': {
@@ -152,24 +124,20 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/register/ui': typeof RegisterUiRoute
   '/dashboard': typeof DashboardIndexRoute
   '/marketplace': typeof MarketplaceIndexRoute
   '/register': typeof RegisterIndexRoute
-  '/dashboard/$patientId': typeof DashboardPatientIdIndexRoute
-  '/dashboard/doctor': typeof DashboardDoctorIndexRoute
+  '/dashboard/add': typeof DashboardAddIndexRoute
   '/marketplace/$poolId': typeof MarketplacePoolIdIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/register/ui': typeof RegisterUiRoute
   '/dashboard': typeof DashboardIndexRoute
   '/marketplace': typeof MarketplaceIndexRoute
   '/register': typeof RegisterIndexRoute
-  '/dashboard/$patientId': typeof DashboardPatientIdIndexRoute
-  '/dashboard/doctor': typeof DashboardDoctorIndexRoute
+  '/dashboard/add': typeof DashboardAddIndexRoute
   '/marketplace/$poolId': typeof MarketplacePoolIdIndexRoute
 }
 
@@ -177,12 +145,10 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/register/ui': typeof RegisterUiRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/marketplace/': typeof MarketplaceIndexRoute
   '/register/': typeof RegisterIndexRoute
-  '/dashboard/$patientId/': typeof DashboardPatientIdIndexRoute
-  '/dashboard/doctor/': typeof DashboardDoctorIndexRoute
+  '/dashboard/add/': typeof DashboardAddIndexRoute
   '/marketplace/$poolId/': typeof MarketplacePoolIdIndexRoute
 }
 
@@ -191,34 +157,28 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
-    | '/register/ui'
     | '/dashboard'
     | '/marketplace'
     | '/register'
-    | '/dashboard/$patientId'
-    | '/dashboard/doctor'
+    | '/dashboard/add'
     | '/marketplace/$poolId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
-    | '/register/ui'
     | '/dashboard'
     | '/marketplace'
     | '/register'
-    | '/dashboard/$patientId'
-    | '/dashboard/doctor'
+    | '/dashboard/add'
     | '/marketplace/$poolId'
   id:
     | '__root__'
     | '/'
     | '/about'
-    | '/register/ui'
     | '/dashboard/'
     | '/marketplace/'
     | '/register/'
-    | '/dashboard/$patientId/'
-    | '/dashboard/doctor/'
+    | '/dashboard/add/'
     | '/marketplace/$poolId/'
   fileRoutesById: FileRoutesById
 }
@@ -226,24 +186,20 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  RegisterUiRoute: typeof RegisterUiRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
   MarketplaceIndexRoute: typeof MarketplaceIndexRoute
   RegisterIndexRoute: typeof RegisterIndexRoute
-  DashboardPatientIdIndexRoute: typeof DashboardPatientIdIndexRoute
-  DashboardDoctorIndexRoute: typeof DashboardDoctorIndexRoute
+  DashboardAddIndexRoute: typeof DashboardAddIndexRoute
   MarketplacePoolIdIndexRoute: typeof MarketplacePoolIdIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  RegisterUiRoute: RegisterUiRoute,
   DashboardIndexRoute: DashboardIndexRoute,
   MarketplaceIndexRoute: MarketplaceIndexRoute,
   RegisterIndexRoute: RegisterIndexRoute,
-  DashboardPatientIdIndexRoute: DashboardPatientIdIndexRoute,
-  DashboardDoctorIndexRoute: DashboardDoctorIndexRoute,
+  DashboardAddIndexRoute: DashboardAddIndexRoute,
   MarketplacePoolIdIndexRoute: MarketplacePoolIdIndexRoute,
 }
 
@@ -259,12 +215,10 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/about",
-        "/register/ui",
         "/dashboard/",
         "/marketplace/",
         "/register/",
-        "/dashboard/$patientId/",
-        "/dashboard/doctor/",
+        "/dashboard/add/",
         "/marketplace/$poolId/"
       ]
     },
@@ -273,9 +227,6 @@ export const routeTree = rootRoute
     },
     "/about": {
       "filePath": "about.tsx"
-    },
-    "/register/ui": {
-      "filePath": "register/ui.tsx"
     },
     "/dashboard/": {
       "filePath": "dashboard/index.tsx"
@@ -286,11 +237,8 @@ export const routeTree = rootRoute
     "/register/": {
       "filePath": "register/index.tsx"
     },
-    "/dashboard/$patientId/": {
-      "filePath": "dashboard/$patientId/index.tsx"
-    },
-    "/dashboard/doctor/": {
-      "filePath": "dashboard/doctor/index.tsx"
+    "/dashboard/add/": {
+      "filePath": "dashboard/add/index.tsx"
     },
     "/marketplace/$poolId/": {
       "filePath": "marketplace/$poolId/index.tsx"

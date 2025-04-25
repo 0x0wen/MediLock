@@ -15,7 +15,6 @@ pub struct AddRecord<'info> {
     
     #[account(
         mut,
-        constraint = doctor_account.role == UserRole::Doctor @ ErrorCode::UnauthorizedRole
     )]
     pub doctor_account: Account<'info, User>,
     

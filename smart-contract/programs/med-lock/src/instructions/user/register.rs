@@ -27,6 +27,7 @@ pub fn register(
     gender: Gender,
     email: String,
     phone_number: String,
+    role: UserRole,
 ) -> Result<()> {
     let user_account = &mut ctx.accounts.user_account;
     let authority = &ctx.accounts.authority;
@@ -39,7 +40,7 @@ pub fn register(
     user_account.gender = gender;
     user_account.email = email.clone();
     user_account.phone_number = phone_number;
-    user_account.role = UserRole::Patient;
+    user_account.role = role;
     user_account.created_at = Clock::get()?.unix_timestamp;
 
     emit!(UserRegistered {

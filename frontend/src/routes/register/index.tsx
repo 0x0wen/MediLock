@@ -220,7 +220,7 @@ function RegistrationPage() {
   };
 
   const goToDashboard = () => {
-    navigate({ to: '/dashboard/doctor' });
+    navigate({ to: '/dashboard/add' });
   };
 
   const handleConsentChange = (index: number, checked: boolean) => {

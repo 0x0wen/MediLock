@@ -27,9 +27,10 @@ pub mod medilock {
         birthdate: i64,
         gender: Gender,
         email: String,
-        phone_number: String
+        phone_number: String,
+        role: UserRole
     ) -> Result<()> {
-        register::register(ctx, nik, full_name, blood_type, birthdate, gender, email, phone_number)
+        register::register(ctx, nik, full_name, blood_type, birthdate, gender, email, phone_number, role)
     }
 
     pub fn withdraw(ctx: Context<Withdraw>) -> Result<()> {

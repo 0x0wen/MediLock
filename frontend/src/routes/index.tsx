@@ -151,7 +151,7 @@ function HomePage() {
                   Your wallet is registered with Medilock. You can now access your dashboard.
                 </p>
                 <Link
-                  to="/dashboard/doctor"
+                  to="/dashboard"
                   className="inline-block w-full px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md text-center"
                 >
                   Go to Dashboard
