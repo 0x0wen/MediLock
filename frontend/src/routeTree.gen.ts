@@ -15,8 +15,8 @@ import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
 import { Route as MarketplaceIndexImport } from './routes/marketplace/index'
 import { Route as LoginIndexImport } from './routes/login/index'
-import { Route as DashboardIndexImport } from './routes/dashboard/index'
 import { Route as MarketplacePoolIdIndexImport } from './routes/marketplace/$poolId/index'
+import { Route as DashboardDoctorIndexImport } from './routes/dashboard/doctor/index'
 import { Route as DashboardPatientIdIndexImport } from './routes/dashboard/$patientId/index'
 
 // Create/Update Routes
@@ -45,15 +45,15 @@ const LoginIndexRoute = LoginIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const DashboardIndexRoute = DashboardIndexImport.update({
-  id: '/dashboard/',
-  path: '/dashboard/',
-  getParentRoute: () => rootRoute,
-} as any)
-
 const MarketplacePoolIdIndexRoute = MarketplacePoolIdIndexImport.update({
   id: '/marketplace/$poolId/',
   path: '/marketplace/$poolId/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const DashboardDoctorIndexRoute = DashboardDoctorIndexImport.update({
+  id: '/dashboard/doctor/',
+  path: '/dashboard/doctor/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -81,13 +81,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutImport
       parentRoute: typeof rootRoute
     }
-    '/dashboard/': {
-      id: '/dashboard/'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardIndexImport
-      parentRoute: typeof rootRoute
-    }
     '/login/': {
       id: '/login/'
       path: '/login'
@@ -109,6 +102,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardPatientIdIndexImport
       parentRoute: typeof rootRoute
     }
+    '/dashboard/doctor/': {
+      id: '/dashboard/doctor/'
+      path: '/dashboard/doctor'
+      fullPath: '/dashboard/doctor'
+      preLoaderRoute: typeof DashboardDoctorIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/marketplace/$poolId/': {
       id: '/marketplace/$poolId/'
       path: '/marketplace/$poolId'
@@ -124,20 +124,20 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/dashboard': typeof DashboardIndexRoute
   '/login': typeof LoginIndexRoute
   '/marketplace': typeof MarketplaceIndexRoute
   '/dashboard/$patientId': typeof DashboardPatientIdIndexRoute
+  '/dashboard/doctor': typeof DashboardDoctorIndexRoute
   '/marketplace/$poolId': typeof MarketplacePoolIdIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/dashboard': typeof DashboardIndexRoute
   '/login': typeof LoginIndexRoute
   '/marketplace': typeof MarketplaceIndexRoute
   '/dashboard/$patientId': typeof DashboardPatientIdIndexRoute
+  '/dashboard/doctor': typeof DashboardDoctorIndexRoute
   '/marketplace/$poolId': typeof MarketplacePoolIdIndexRoute
 }
 
@@ -145,10 +145,10 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/dashboard/': typeof DashboardIndexRoute
   '/login/': typeof LoginIndexRoute
   '/marketplace/': typeof MarketplaceIndexRoute
   '/dashboard/$patientId/': typeof DashboardPatientIdIndexRoute
+  '/dashboard/doctor/': typeof DashboardDoctorIndexRoute
   '/marketplace/$poolId/': typeof MarketplacePoolIdIndexRoute
 }
 
@@ -157,28 +157,28 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
-    | '/dashboard'
     | '/login'
     | '/marketplace'
     | '/dashboard/$patientId'
+    | '/dashboard/doctor'
     | '/marketplace/$poolId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
-    | '/dashboard'
     | '/login'
     | '/marketplace'
     | '/dashboard/$patientId'
+    | '/dashboard/doctor'
     | '/marketplace/$poolId'
   id:
     | '__root__'
     | '/'
     | '/about'
-    | '/dashboard/'
     | '/login/'
     | '/marketplace/'
     | '/dashboard/$patientId/'
+    | '/dashboard/doctor/'
     | '/marketplace/$poolId/'
   fileRoutesById: FileRoutesById
 }
@@ -186,20 +186,20 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  DashboardIndexRoute: typeof DashboardIndexRoute
   LoginIndexRoute: typeof LoginIndexRoute
   MarketplaceIndexRoute: typeof MarketplaceIndexRoute
   DashboardPatientIdIndexRoute: typeof DashboardPatientIdIndexRoute
+  DashboardDoctorIndexRoute: typeof DashboardDoctorIndexRoute
   MarketplacePoolIdIndexRoute: typeof MarketplacePoolIdIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  DashboardIndexRoute: DashboardIndexRoute,
   LoginIndexRoute: LoginIndexRoute,
   MarketplaceIndexRoute: MarketplaceIndexRoute,
   DashboardPatientIdIndexRoute: DashboardPatientIdIndexRoute,
+  DashboardDoctorIndexRoute: DashboardDoctorIndexRoute,
   MarketplacePoolIdIndexRoute: MarketplacePoolIdIndexRoute,
 }
 
@@ -215,10 +215,10 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/about",
-        "/dashboard/",
         "/login/",
         "/marketplace/",
         "/dashboard/$patientId/",
+        "/dashboard/doctor/",
         "/marketplace/$poolId/"
       ]
     },
@@ -228,9 +228,6 @@ export const routeTree = rootRoute
     "/about": {
       "filePath": "about.tsx"
     },
-    "/dashboard/": {
-      "filePath": "dashboard/index.tsx"
-    },
     "/login/": {
       "filePath": "login/index.tsx"
     },
@@ -239,6 +236,9 @@ export const routeTree = rootRoute
     },
     "/dashboard/$patientId/": {
       "filePath": "dashboard/$patientId/index.tsx"
+    },
+    "/dashboard/doctor/": {
+      "filePath": "dashboard/doctor/index.tsx"
     },
     "/marketplace/$poolId/": {
       "filePath": "marketplace/$poolId/index.tsx"

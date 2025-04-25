@@ -1,10 +1,4 @@
-/**
- * Program IDL in camelCase format in order to be used in JS/TS.
- *
- * Note that this is only a type helper and is not the actual IDL. The original
- * IDL can be found at `target/idl/medilock.json`.
- */
-export type Medilock = {
+{
   "address": "BqwVrtrJvBw5GDv8gJkyJpHp1BQc9sq1DexacBNPC3tB",
   "metadata": {
     "name": "medilock",
@@ -14,7 +8,7 @@ export type Medilock = {
   },
   "instructions": [
     {
-      "name": "addPool",
+      "name": "add_pool",
       "discriminator": [
         115,
         230,
@@ -57,7 +51,7 @@ export type Medilock = {
           "signer": true
         },
         {
-          "name": "systemProgram",
+          "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
       ],
@@ -75,17 +69,17 @@ export type Medilock = {
           "type": "string"
         },
         {
-          "name": "pricePerRecord",
+          "name": "price_per_record",
           "type": "u64"
         },
         {
-          "name": "totalNeeded",
+          "name": "total_needed",
           "type": "u64"
         }
       ]
     },
     {
-      "name": "addRecord",
+      "name": "add_record",
       "discriminator": [
         65,
         186,
@@ -98,15 +92,15 @@ export type Medilock = {
       ],
       "accounts": [
         {
-          "name": "recordAccount",
+          "name": "record_account",
           "writable": true
         },
         {
-          "name": "doctorAccount",
+          "name": "doctor_account",
           "writable": true
         },
         {
-          "name": "patientAccount",
+          "name": "patient_account",
           "writable": true
         },
         {
@@ -115,13 +109,13 @@ export type Medilock = {
           "signer": true
         },
         {
-          "name": "systemProgram",
+          "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
       ],
       "args": [
         {
-          "name": "recordCounter",
+          "name": "record_counter",
           "type": "u8"
         },
         {
@@ -176,11 +170,11 @@ export type Medilock = {
               {
                 "kind": "account",
                 "path": "pool.id",
-                "account": "dataPool"
+                "account": "DataPool"
               },
               {
                 "kind": "arg",
-                "path": "recordId"
+                "path": "record_id"
               },
               {
                 "kind": "account",
@@ -195,13 +189,13 @@ export type Medilock = {
           "signer": true
         },
         {
-          "name": "systemProgram",
+          "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
       ],
       "args": [
         {
-          "name": "recordId",
+          "name": "record_id",
           "type": "u64"
         }
       ]
@@ -225,7 +219,7 @@ export type Medilock = {
           "signer": true
         },
         {
-          "name": "systemProgram",
+          "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
       ],
@@ -245,7 +239,7 @@ export type Medilock = {
       ],
       "accounts": [
         {
-          "name": "userAccount",
+          "name": "user_account",
           "writable": true,
           "pda": {
             "seeds": [
@@ -271,7 +265,7 @@ export type Medilock = {
           "signer": true
         },
         {
-          "name": "systemProgram",
+          "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
       ],
@@ -284,14 +278,14 @@ export type Medilock = {
           "name": "role",
           "type": {
             "defined": {
-              "name": "userRole"
+              "name": "UserRole"
             }
           }
         }
       ]
     },
     {
-      "name": "requestAccess",
+      "name": "request_access",
       "discriminator": [
         102,
         165,
@@ -304,7 +298,7 @@ export type Medilock = {
       ],
       "accounts": [
         {
-          "name": "accessRequest",
+          "name": "access_request",
           "writable": true,
           "pda": {
             "seeds": [
@@ -321,20 +315,20 @@ export type Medilock = {
               },
               {
                 "kind": "account",
-                "path": "doctorAccount"
+                "path": "doctor_account"
               },
               {
                 "kind": "account",
-                "path": "patientAccount"
+                "path": "patient_account"
               }
             ]
           }
         },
         {
-          "name": "doctorAccount"
+          "name": "doctor_account"
         },
         {
-          "name": "patientAccount"
+          "name": "patient_account"
         },
         {
           "name": "authority",
@@ -342,7 +336,7 @@ export type Medilock = {
           "signer": true
         },
         {
-          "name": "systemProgram",
+          "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
       ],
@@ -358,7 +352,7 @@ export type Medilock = {
       ]
     },
     {
-      "name": "respondAccess",
+      "name": "respond_access",
       "discriminator": [
         113,
         160,
@@ -371,7 +365,7 @@ export type Medilock = {
       ],
       "accounts": [
         {
-          "name": "accessRequest",
+          "name": "access_request",
           "writable": true,
           "pda": {
             "seeds": [
@@ -388,20 +382,20 @@ export type Medilock = {
               },
               {
                 "kind": "account",
-                "path": "doctorAccount"
+                "path": "doctor_account"
               },
               {
                 "kind": "account",
-                "path": "patientAccount"
+                "path": "patient_account"
               }
             ]
           }
         },
         {
-          "name": "doctorAccount"
+          "name": "doctor_account"
         },
         {
-          "name": "patientAccount"
+          "name": "patient_account"
         },
         {
           "name": "authority",
@@ -409,7 +403,7 @@ export type Medilock = {
           "signer": true
         },
         {
-          "name": "systemProgram",
+          "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
       ],
@@ -447,7 +441,7 @@ export type Medilock = {
           "signer": true
         },
         {
-          "name": "poolVault",
+          "name": "pool_vault",
           "writable": true,
           "pda": {
             "seeds": [
@@ -469,7 +463,7 @@ export type Medilock = {
           }
         },
         {
-          "name": "systemProgram",
+          "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
       ],
@@ -478,7 +472,7 @@ export type Medilock = {
   ],
   "accounts": [
     {
-      "name": "accessRequest",
+      "name": "AccessRequest",
       "discriminator": [
         165,
         109,
@@ -491,7 +485,7 @@ export type Medilock = {
       ]
     },
     {
-      "name": "contribution",
+      "name": "Contribution",
       "discriminator": [
         182,
         187,
@@ -504,7 +498,7 @@ export type Medilock = {
       ]
     },
     {
-      "name": "dataPool",
+      "name": "DataPool",
       "discriminator": [
         49,
         159,
@@ -517,7 +511,7 @@ export type Medilock = {
       ]
     },
     {
-      "name": "medicalRecord",
+      "name": "MedicalRecord",
       "discriminator": [
         30,
         152,
@@ -530,7 +524,7 @@ export type Medilock = {
       ]
     },
     {
-      "name": "user",
+      "name": "User",
       "discriminator": [
         159,
         117,
@@ -545,7 +539,7 @@ export type Medilock = {
   ],
   "events": [
     {
-      "name": "accessLogged",
+      "name": "AccessLogged",
       "discriminator": [
         243,
         53,
@@ -558,7 +552,7 @@ export type Medilock = {
       ]
     },
     {
-      "name": "accessRequestResponded",
+      "name": "AccessRequestResponded",
       "discriminator": [
         151,
         72,
@@ -571,7 +565,7 @@ export type Medilock = {
       ]
     },
     {
-      "name": "accessRequested",
+      "name": "AccessRequested",
       "discriminator": [
         70,
         226,
@@ -584,7 +578,7 @@ export type Medilock = {
       ]
     },
     {
-      "name": "recordAdded",
+      "name": "RecordAdded",
       "discriminator": [
         220,
         101,
@@ -597,7 +591,7 @@ export type Medilock = {
       ]
     },
     {
-      "name": "userRegistered",
+      "name": "UserRegistered",
       "discriminator": [
         21,
         42,
@@ -613,47 +607,47 @@ export type Medilock = {
   "errors": [
     {
       "code": 6000,
-      "name": "unauthorizedRole",
+      "name": "UnauthorizedRole",
       "msg": "Unauthorized role for this operation"
     },
     {
       "code": 6001,
-      "name": "unauthorizedAccess",
+      "name": "UnauthorizedAccess",
       "msg": "Unauthorized access"
     },
     {
       "code": 6002,
-      "name": "accessDenied",
+      "name": "AccessDenied",
       "msg": "Access denied"
     },
     {
       "code": 6003,
-      "name": "accessExpired",
+      "name": "AccessExpired",
       "msg": "Access has expired"
     },
     {
       "code": 6004,
-      "name": "poolFull",
+      "name": "PoolFull",
       "msg": "Pool has already collected the maximum number of contributions."
     },
     {
       "code": 6005,
-      "name": "alreadyPaid",
+      "name": "AlreadyPaid",
       "msg": "This contribution has already been paid out."
     }
   ],
   "types": [
     {
-      "name": "accessLogged",
+      "name": "AccessLogged",
       "type": {
         "kind": "struct",
         "fields": [
           {
-            "name": "recordCid",
+            "name": "record_cid",
             "type": "string"
           },
           {
-            "name": "userDid",
+            "name": "user_did",
             "type": "string"
           },
           {
@@ -668,20 +662,20 @@ export type Medilock = {
       }
     },
     {
-      "name": "accessRequest",
+      "name": "AccessRequest",
       "type": {
         "kind": "struct",
         "fields": [
           {
-            "name": "doctorDid",
+            "name": "doctor_did",
             "type": "string"
           },
           {
-            "name": "patientDid",
+            "name": "patient_did",
             "type": "string"
           },
           {
-            "name": "requestedAt",
+            "name": "requested_at",
             "type": "i64"
           },
           {
@@ -689,35 +683,35 @@ export type Medilock = {
             "type": "string"
           },
           {
-            "name": "expiresAt",
+            "name": "expires_at",
             "type": "i64"
           },
           {
             "name": "status",
             "type": {
               "defined": {
-                "name": "requestStatus"
+                "name": "RequestStatus"
               }
             }
           },
           {
-            "name": "respondedAt",
+            "name": "responded_at",
             "type": "i64"
           }
         ]
       }
     },
     {
-      "name": "accessRequestResponded",
+      "name": "AccessRequestResponded",
       "type": {
         "kind": "struct",
         "fields": [
           {
-            "name": "doctorDid",
+            "name": "doctor_did",
             "type": "string"
           },
           {
-            "name": "patientDid",
+            "name": "patient_did",
             "type": "string"
           },
           {
@@ -732,16 +726,16 @@ export type Medilock = {
       }
     },
     {
-      "name": "accessRequested",
+      "name": "AccessRequested",
       "type": {
         "kind": "struct",
         "fields": [
           {
-            "name": "doctorDid",
+            "name": "doctor_did",
             "type": "string"
           },
           {
-            "name": "patientDid",
+            "name": "patient_did",
             "type": "string"
           },
           {
@@ -752,7 +746,7 @@ export type Medilock = {
       }
     },
     {
-      "name": "contribution",
+      "name": "Contribution",
       "type": {
         "kind": "struct",
         "fields": [
@@ -761,11 +755,11 @@ export type Medilock = {
             "type": "u64"
           },
           {
-            "name": "poolId",
+            "name": "pool_id",
             "type": "u64"
           },
           {
-            "name": "recordId",
+            "name": "record_id",
             "type": "u64"
           },
           {
@@ -780,7 +774,7 @@ export type Medilock = {
       }
     },
     {
-      "name": "dataPool",
+      "name": "DataPool",
       "type": {
         "kind": "struct",
         "fields": [
@@ -801,11 +795,11 @@ export type Medilock = {
             "type": "string"
           },
           {
-            "name": "pricePerRecord",
+            "name": "price_per_record",
             "type": "u64"
           },
           {
-            "name": "totalNeeded",
+            "name": "total_needed",
             "type": "u64"
           },
           {
@@ -816,7 +810,7 @@ export type Medilock = {
       }
     },
     {
-      "name": "medicalRecord",
+      "name": "MedicalRecord",
       "type": {
         "kind": "struct",
         "fields": [
@@ -825,11 +819,11 @@ export type Medilock = {
             "type": "string"
           },
           {
-            "name": "doctorDid",
+            "name": "doctor_did",
             "type": "string"
           },
           {
-            "name": "patientDid",
+            "name": "patient_did",
             "type": "string"
           },
           {
@@ -844,7 +838,7 @@ export type Medilock = {
       }
     },
     {
-      "name": "recordAdded",
+      "name": "RecordAdded",
       "type": {
         "kind": "struct",
         "fields": [
@@ -853,11 +847,11 @@ export type Medilock = {
             "type": "string"
           },
           {
-            "name": "patientDid",
+            "name": "patient_did",
             "type": "string"
           },
           {
-            "name": "doctorDid",
+            "name": "doctor_did",
             "type": "string"
           },
           {
@@ -868,24 +862,24 @@ export type Medilock = {
       }
     },
     {
-      "name": "requestStatus",
+      "name": "RequestStatus",
       "type": {
         "kind": "enum",
         "variants": [
           {
-            "name": "pending"
+            "name": "Pending"
           },
           {
-            "name": "approved"
+            "name": "Approved"
           },
           {
-            "name": "denied"
+            "name": "Denied"
           }
         ]
       }
     },
     {
-      "name": "user",
+      "name": "User",
       "type": {
         "kind": "struct",
         "fields": [
@@ -894,26 +888,26 @@ export type Medilock = {
             "type": "string"
           },
           {
-            "name": "publicKey",
+            "name": "public_key",
             "type": "pubkey"
           },
           {
             "name": "role",
             "type": {
               "defined": {
-                "name": "userRole"
+                "name": "UserRole"
               }
             }
           },
           {
-            "name": "createdAt",
+            "name": "created_at",
             "type": "i64"
           }
         ]
       }
     },
     {
-      "name": "userRegistered",
+      "name": "UserRegistered",
       "type": {
         "kind": "struct",
         "fields": [
@@ -925,7 +919,7 @@ export type Medilock = {
             "name": "role",
             "type": {
               "defined": {
-                "name": "userRole"
+                "name": "UserRole"
               }
             }
           },
@@ -937,15 +931,15 @@ export type Medilock = {
       }
     },
     {
-      "name": "userRole",
+      "name": "UserRole",
       "type": {
         "kind": "enum",
         "variants": [
           {
-            "name": "patient"
+            "name": "Patient"
           },
           {
-            "name": "doctor"
+            "name": "Doctor"
           }
         ]
       }
@@ -953,9 +947,9 @@ export type Medilock = {
   ],
   "constants": [
     {
-      "name": "seed",
+      "name": "SEED",
       "type": "string",
       "value": "\"anchor\""
     }
   ]
-};
+}
