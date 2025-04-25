@@ -39,7 +39,7 @@ export const RECORD_SEED = Buffer.from('record');
 export const ACCESS_SEED = Buffer.from('access');
 
 // IPFS gateway URL for reading files
-export const IPFS_GATEWAY_URL = import.meta.env.VITE_IPFS_GATEWAY_URL || 'https://ipfs.io/ipfs/';
+export const IPFS_GATEWAY_URL = import.meta.env.VITE_PINATA_GATEWAY_URL || 'https://ipfs.io/ipfs/';
 
 // For pinata API (if you want to keep using it)
 export const PINATA_API_KEY = import.meta.env.VITE_PINATA_API_KEY || '';

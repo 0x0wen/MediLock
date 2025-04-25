@@ -547,7 +547,7 @@ export default function MedicalRecordArchive() {
       const uploadResult = {
         ipfs: {
           hash: ipfsResponse.cid,
-          url: `https://ipfs.io/ipfs/${ipfsResponse.cid}`
+          url: `https://${import.meta.env.VITE_PINATA_GATEWAY_URL}/ipfs/${ipfsResponse.cid}`
         },
         blockchain: {
           signature: result.signature,
@@ -593,7 +593,7 @@ export default function MedicalRecordArchive() {
       // Otherwise construct a fetch URL using a gateway
       if (!fetchUrl.startsWith('http')) {
         // Use a public IPFS gateway
-        fetchUrl = `https://ipfs.io/ipfs/${ipfsUrl}`;
+        fetchUrl = `https://${import.meta.env.VITE_PINATA_GATEWAY_URL}/ipfs/${ipfsUrl}`;
       }
       
       const response = await fetch(fetchUrl);
