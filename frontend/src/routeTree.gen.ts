@@ -15,7 +15,10 @@ import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
 import { Route as RegisterIndexImport } from './routes/register/index'
 import { Route as MarketplaceIndexImport } from './routes/marketplace/index'
+import { Route as LoginIndexImport } from './routes/login/index'
 import { Route as DashboardIndexImport } from './routes/dashboard/index'
+import { Route as AddRecordIndexImport } from './routes/add-record/index'
+import { Route as AccessIndexImport } from './routes/access/index'
 import { Route as MarketplacePoolIdIndexImport } from './routes/marketplace/$poolId/index'
 import { Route as DashboardAddIndexImport } from './routes/dashboard/add/index'
 
@@ -45,9 +48,27 @@ const MarketplaceIndexRoute = MarketplaceIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const LoginIndexRoute = LoginIndexImport.update({
+  id: '/login/',
+  path: '/login/',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const DashboardIndexRoute = DashboardIndexImport.update({
   id: '/dashboard/',
   path: '/dashboard/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AddRecordIndexRoute = AddRecordIndexImport.update({
+  id: '/add-record/',
+  path: '/add-record/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AccessIndexRoute = AccessIndexImport.update({
+  id: '/access/',
+  path: '/access/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -81,11 +102,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutImport
       parentRoute: typeof rootRoute
     }
+    '/access/': {
+      id: '/access/'
+      path: '/access'
+      fullPath: '/access'
+      preLoaderRoute: typeof AccessIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/add-record/': {
+      id: '/add-record/'
+      path: '/add-record'
+      fullPath: '/add-record'
+      preLoaderRoute: typeof AddRecordIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/dashboard/': {
       id: '/dashboard/'
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/login/': {
+      id: '/login/'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginIndexImport
       parentRoute: typeof rootRoute
     }
     '/marketplace/': {
@@ -124,7 +166,10 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/access': typeof AccessIndexRoute
+  '/add-record': typeof AddRecordIndexRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/login': typeof LoginIndexRoute
   '/marketplace': typeof MarketplaceIndexRoute
   '/register': typeof RegisterIndexRoute
   '/dashboard/add': typeof DashboardAddIndexRoute
@@ -134,7 +179,10 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/access': typeof AccessIndexRoute
+  '/add-record': typeof AddRecordIndexRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/login': typeof LoginIndexRoute
   '/marketplace': typeof MarketplaceIndexRoute
   '/register': typeof RegisterIndexRoute
   '/dashboard/add': typeof DashboardAddIndexRoute
@@ -145,7 +193,10 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/access/': typeof AccessIndexRoute
+  '/add-record/': typeof AddRecordIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/login/': typeof LoginIndexRoute
   '/marketplace/': typeof MarketplaceIndexRoute
   '/register/': typeof RegisterIndexRoute
   '/dashboard/add/': typeof DashboardAddIndexRoute
@@ -157,7 +208,10 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/access'
+    | '/add-record'
     | '/dashboard'
+    | '/login'
     | '/marketplace'
     | '/register'
     | '/dashboard/add'
@@ -166,7 +220,10 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/access'
+    | '/add-record'
     | '/dashboard'
+    | '/login'
     | '/marketplace'
     | '/register'
     | '/dashboard/add'
@@ -175,7 +232,10 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/access/'
+    | '/add-record/'
     | '/dashboard/'
+    | '/login/'
     | '/marketplace/'
     | '/register/'
     | '/dashboard/add/'
@@ -186,7 +246,10 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AccessIndexRoute: typeof AccessIndexRoute
+  AddRecordIndexRoute: typeof AddRecordIndexRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
+  LoginIndexRoute: typeof LoginIndexRoute
   MarketplaceIndexRoute: typeof MarketplaceIndexRoute
   RegisterIndexRoute: typeof RegisterIndexRoute
   DashboardAddIndexRoute: typeof DashboardAddIndexRoute
@@ -196,7 +259,10 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AccessIndexRoute: AccessIndexRoute,
+  AddRecordIndexRoute: AddRecordIndexRoute,
   DashboardIndexRoute: DashboardIndexRoute,
+  LoginIndexRoute: LoginIndexRoute,
   MarketplaceIndexRoute: MarketplaceIndexRoute,
   RegisterIndexRoute: RegisterIndexRoute,
   DashboardAddIndexRoute: DashboardAddIndexRoute,
@@ -215,7 +281,10 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/about",
+        "/access/",
+        "/add-record/",
         "/dashboard/",
+        "/login/",
         "/marketplace/",
         "/register/",
         "/dashboard/add/",
@@ -228,8 +297,17 @@ export const routeTree = rootRoute
     "/about": {
       "filePath": "about.tsx"
     },
+    "/access/": {
+      "filePath": "access/index.tsx"
+    },
+    "/add-record/": {
+      "filePath": "add-record/index.tsx"
+    },
     "/dashboard/": {
       "filePath": "dashboard/index.tsx"
+    },
+    "/login/": {
+      "filePath": "login/index.tsx"
     },
     "/marketplace/": {
       "filePath": "marketplace/index.tsx"

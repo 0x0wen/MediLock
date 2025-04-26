@@ -1,4 +1,3 @@
-
 use anchor_lang::prelude::*;
 use crate::{state::{AccessRequest, AccessRequestResponded, ErrorCode, RequestStatus, User, UserRole}, ACCESS_SEED};
 
@@ -30,6 +29,7 @@ pub struct RespondAccess<'info> {
 pub fn respond_access(
     ctx: Context<RespondAccess>,
     approved: bool,
+    description: String,
 ) -> Result<()> {
     let access_request = &mut ctx.accounts.access_request;
     let patient_account = &ctx.accounts.patient_account;
@@ -47,6 +47,11 @@ pub fn respond_access(
         RequestStatus::Denied
     };
     access_request.responded_at = Clock::get()?.unix_timestamp;
+    
+    // Store the description if access is approved
+    if approved {
+        access_request.description = description;
+    }
 
     emit!(AccessRequestResponded {
         doctor_did: access_request.doctor_did.clone(),

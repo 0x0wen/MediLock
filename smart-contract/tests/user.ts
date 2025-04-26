@@ -83,7 +83,7 @@ describe("Register Instruction Tests", () => {
       expect(userAccount.createdAt.toNumber()).to.be.greaterThan(0);
     } catch (e) {
       console.error("Error in registration test:", e);
-      throw e;
+        throw e;
     }
   });
 

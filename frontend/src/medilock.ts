@@ -6,7 +6,7 @@
  */
 
 export const IDL = {
-  "address": "7GdfTjDPVuMUxrM42XrVugqCjUSoPdPBtNsZeGfKZRFY",
+  "address": "BqwVrtrJvBw5GDv8gJkyJpHp1BQc9sq1DexacBNPC3tB",
   "metadata": {
     "name": "medilock",
     "version": "0.1.0",
@@ -1042,7 +1042,7 @@ export const IDL = {
   ]
 }
 export type Medilock = {
-  "address": "7GdfTjDPVuMUxrM42XrVugqCjUSoPdPBtNsZeGfKZRFY",
+  "address": "BqwVrtrJvBw5GDv8gJkyJpHp1BQc9sq1DexacBNPC3tB",
   "metadata": {
     "name": "medilock",
     "version": "0.1.0",

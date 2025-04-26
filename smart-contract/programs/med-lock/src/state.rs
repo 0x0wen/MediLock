@@ -48,6 +48,8 @@ pub struct AccessRequest {
     pub expires_at: i64,
     pub status: RequestStatus,
     pub responded_at: i64,
+    #[max_len(64)]
+    pub description: String,
 }
 
 #[account]

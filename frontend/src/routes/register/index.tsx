@@ -4,7 +4,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { registerUser, requestAirdrop, getUserPDA } from '../../utils';
 import * as web3 from '@solana/web3.js';
 import * as anchor from '@coral-xyz/anchor';
-import { CalendarIcon, ChevronRight } from "lucide-react"
+import { CalendarIcon, ChevronRight, Link } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -23,17 +23,17 @@ function RegistrationPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [logs, setLogs] = useState<Array<{ timestamp: string; message: string; type: string }>>([]);
-  const [userRegistered, setUserRegistered] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
 
   // Form state
-  const [nik, setNik] = useState("123456789012345");
-  const [fullName, setFullName] = useState("Owen Tobias Sinurat");
-  const [bloodType, setBloodType] = useState("b-plus");
-  const [birthdate, setBirthdate] = useState("01/01/01");
-  const [gender, setGender] = useState("male");
-  const [email, setEmail] = useState("owentobias@gmail.com");
-  const [phoneNumber, setPhoneNumber] = useState("08135221982");
+  const [nik, setNik] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [bloodType, setBloodType] = useState("");
+  const [birthdate, setBirthdate] = useState("");
+  const [gender, setGender] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [role, setRole] = useState("");
   const [consentChecked, setConsentChecked] = useState([true, true, true]);
   const [showSuccessUI, setShowSuccessUI] = useState(false);
   
@@ -57,7 +57,14 @@ function RegistrationPage() {
     "prefer-not-to-say": { preferNotToSay: {} }
   };
 
+  // Map role values to the format needed by the contract
+  const roleMap: Record<string, any> = {
+    "patient": { patient: {} },
+    "doctor": { doctor: {} }
+  };
+
   useEffect(() => {
+    
     // Redirect to home if not connected
     if (!connected || !publicKey) {
       navigate({ to: '/' });
@@ -85,8 +92,9 @@ function RegistrationPage() {
       
       if (accountInfo) {
         addLog(`User already registered: ${userPDA.toBase58().slice(0, 8)}...${userPDA.toBase58().slice(-8)}`, 'success');
-        setUserRegistered(true);
         setShowSuccessUI(true);
+        addLog("Redirecting to dashboard...");
+        navigate({ to: '/dashboard' });
       }
     } catch (error) {
       console.error("Error checking user registration:", error);
@@ -178,7 +186,8 @@ function RegistrationPage() {
             birthdate: new anchor.BN(birthdateTimestamp),
             gender: genderMap[gender] || { male: {} },
             email,
-            phone_number: phoneNumber
+            phone_number: phoneNumber,
+            role: roleMap[role] || { patient: {} }
           });
           
           return result;
@@ -188,22 +197,17 @@ function RegistrationPage() {
         }
       };
       
-      // Call our custom register function
-      const result = await customRegisterUser(wallet);
       
-      // Check result to handle case where user is already registered
-      if (result.success) {
-        if (result.alreadyRegistered) {
-          addLog(`User is already registered. Continuing to dashboard...`, 'success');
-        } else {
-          addLog(`User registered successfully: ${result.signature}`, 'success');
-        }
-        setUserRegistered(true);
+      const result = await customRegisterUser(wallet);
+      if (result.alreadyRegistered) {
+        addLog(`User is already registered. Continuing to dashboard...`, 'success');
+        navigate({ to: '/dashboard' });
+      } else if (result.success) {
+        addLog(`User registered successfully: ${result.signature}`, 'success');
         setShowSuccessUI(true);
       } else {
         throw new Error('Registration failed');
       }
-      
       return result;
     } catch (error: any) {
       console.error('Registration error:', error);
@@ -213,14 +217,6 @@ function RegistrationPage() {
       setLoading(false);
       setIsRegistering(false);
     }
-  };
-
-  const goToHome = () => {
-    navigate({ to: '/' });
-  };
-
-  const goToDashboard = () => {
-    navigate({ to: '/dashboard/add' });
   };
 
   const handleConsentChange = (index: number, checked: boolean) => {
@@ -243,15 +239,13 @@ function RegistrationPage() {
           <div className="bg-white rounded-lg shadow-md p-6 mb-6">
             <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
               <p className="font-semibold">Registration Successful!</p>
-              <p className="text-sm mt-1">Your wallet is now registered as a patient.</p>
-              <div className="mt-4">
-                <button
-                  onClick={goToDashboard}
+              <p className="text-sm mt-1">Your wallet is now registered as a {role === "patient" ? "patient" : "doctor"}.</p>
+                <Link
+                  to={'/dashboard'}
                   className="w-full px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md"
                 >
                   Go to Dashboard
-                </button>
-              </div>
+                </Link>
             </div>
           </div>
           
@@ -289,7 +283,7 @@ function RegistrationPage() {
 
   // Main registration form UI (integrated from ui.tsx)
   return (
-    <div className="flex min-h-screen bg-[#fbfbfb]">
+    <div className="flex min-h-screen bg-[#fbfbfb] pt-20">
       {/* Left side - Blue gradient with text */}
       <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-[#4aa5e7] to-[#1565a0] p-8 items-center justify-center relative">
         <div className="text-white text-4xl font-medium max-w-md">
@@ -327,7 +321,7 @@ function RegistrationPage() {
                 </label>
                 <Input
                   id="fullName"
-                  placeholder="Owen Tobias Sinurat"
+                  placeholder="Xxxx Xxxxxx Xxxxxx"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   className="w-full border-[#d0d5dd] rounded-md"
@@ -423,65 +417,27 @@ function RegistrationPage() {
               </div>
             </div>
 
-            <div className="mt-8">
-              <div className="flex items-start gap-2 mb-2">
-                <span className="text-[#df0004] font-bold">⚠</span>
-                <p className="text-[#df0004] font-bold">PLEASE READ CAREFULLY</p>
-              </div>
-              <p className="text-[#707070] mb-4">
-                Before continuing, please review and agree to the following terms related to how your medical data is
-                stored and accessed.
-              </p>
-
-              <div className="space-y-4">
-                <div className="flex gap-3">
-                  <Checkbox 
-                    id="consent1" 
-                    className="mt-1 border-[#d0d5dd]" 
-                    checked={consentChecked[0]}
-                    onCheckedChange={(checked) => handleConsentChange(0, checked === true)}
-                  />
-                  <label htmlFor="consent1" className="text-sm text-[#2b2f32]">
-                    I agree to allow Medilock to securely store and encrypt my medical records using blockchain
-                    technology.
-                  </label>
-                </div>
-
-                <div className="flex gap-3">
-                  <Checkbox 
-                    id="consent2" 
-                    className="mt-1 border-[#d0d5dd]"
-                    checked={consentChecked[1]}
-                    onCheckedChange={(checked) => handleConsentChange(1, checked === true)}
-                  />
-                  <label htmlFor="consent2" className="text-sm text-[#2b2f32]">
-                    I consent to emergency access to my medical data in life-threatening situations (e.g., accident,
-                    unconsciousness, or when no guardian is present).
-                  </label>
-                </div>
-
-                <div className="flex gap-3">
-                  <Checkbox 
-                    id="consent3" 
-                    className="mt-1 border-[#d0d5dd]"
-                    checked={consentChecked[2]}
-                    onCheckedChange={(checked) => handleConsentChange(2, checked === true)}
-                  />
-                  <label htmlFor="consent3" className="text-sm text-[#2b2f32]">
-                    I understand that I can manage, limit, or revoke access to my records at any time through my privacy
-                    settings.
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex justify-between mt-8">
-              <Button 
-                className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-md"
-                onClick={goToHome}
+            <div>
+              <label htmlFor="role" className="block text-sm font-medium text-[#5a5a5a] mb-1">
+                ROLE
+              </label>
+              <Select 
+                value={role}
+                onValueChange={setRole}
               >
-                Back
-              </Button>
+                <SelectTrigger className="w-full border-[#d0d5dd] rounded-md">
+                  <SelectValue placeholder="Select role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="patient">Patient</SelectItem>
+                  <SelectItem value="doctor">Doctor</SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-gray-500 mt-1">
+                Select your role in the healthcare system. This affects what actions you can perform in the app.
+              </p>
+            </div>
+            <div className="flex justify-end mt-8">
               <Button 
                 className="bg-[#1a81cd] hover:bg-[#1565a0] text-white px-8 py-2 rounded-md flex items-center"
                 onClick={register}
@@ -492,45 +448,6 @@ function RegistrationPage() {
               </Button>
             </div>
             
-            {/* Connected wallet info */}
-            {connected && publicKey && (
-              <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-md">
-                <p className="text-sm text-blue-800">Connected Wallet:</p>
-                <p className="text-xs font-mono break-all">{publicKey.toString()}</p>
-              </div>
-            )}
-            
-            {/* Error Message */}
-            {error && (
-              <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-md">
-                {error}
-              </div>
-            )}
-            
-            {/* Logs (minimized in the form view) */}
-            <div className="mt-6">
-              <details>
-                <summary className="cursor-pointer text-sm font-medium text-gray-600">
-                  Show process logs
-                </summary>
-                <div className="mt-2 h-32 overflow-auto p-3 border border-gray-300 rounded-md bg-black text-white font-mono">
-                  {logs.length === 0 ? (
-                    <p className="text-gray-500">Logs will appear here as you perform actions</p>
-                  ) : (
-                    logs.map((log, index) => (
-                      <div key={index} className={`text-xs mb-1 ${
-                        log.type === 'error' ? 'text-red-400' : 
-                        log.type === 'success' ? 'text-green-400' : 
-                        log.type === 'warning' ? 'text-yellow-400' : 
-                        'text-gray-300'
-                      }`}>
-                        [{log.timestamp}] {log.message}
-                      </div>
-                    ))
-                  )}
-                </div>
-              </details>
-            </div>
           </div>
         </div>
       </div>

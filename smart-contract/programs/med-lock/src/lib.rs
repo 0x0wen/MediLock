@@ -9,7 +9,7 @@ pub use constants::*;
 pub use instructions::*;
 pub use state::*;
 
-declare_id!("7GdfTjDPVuMUxrM42XrVugqCjUSoPdPBtNsZeGfKZRFY);
+declare_id!("BqwVrtrJvBw5GDv8gJkyJpHp1BQc9sq1DexacBNPC3tB");
 
 #[program]
 pub mod medilock {
@@ -65,7 +65,8 @@ pub mod medilock {
     pub fn respond_access(
         ctx: Context<RespondAccess>,
         approved: bool,
+        decrypted_cid: String,
     ) -> Result<()> {
-        record::respond_access(ctx, approved)
+        instructions::record::respond_access::respond_access(ctx, approved, decrypted_cid)
     }
 }

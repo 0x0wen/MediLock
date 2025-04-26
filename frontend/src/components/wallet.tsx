@@ -44,7 +44,7 @@ export const Wallet: FC<{children: React.ReactNode}> = ({children}) => {
         <ConnectionProvider endpoint={endpoint}>
             <WalletProvider wallets={wallets} autoConnect>
                 <WalletModalProvider>
-                    <div className='flex flex-row justify-between py-3'>
+                    <div className='flex flex-row justify-between py-3 fixed top-0 left-0 right-0 z-50 bg-white'>
                         <Link to="/">
                             <img src={logo} alt="logo" className='h-10' />
                         </Link>
