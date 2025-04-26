@@ -1,33 +1,15 @@
 import { useState } from "react";
-import {
-  Box,
-  Container,
-  VStack,
-  Heading,
-  Text,
-  Divider,
-  useColorModeValue,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-} from "@chakra-ui/react";
-import ImageUpload from "./components/ImageUpload";
-import OcrProcessor from "./components/OcrProcessor";
-import OpenAIProcessor from "./components/OpenAIProcessor";
-import OpenAIServerProcessor from "./components/OpenAIServerProcessor";
-import JsonDisplay from "./components/JsonDisplay";
-import FhirDisplay from "./components/FhirDisplay";
-import useOcrToFhir from "./hooks/useOcrToFhir";
+import ImageUpload from "./ImageUpload";
+import OpenAIProcessor from "./OpenAIProcessor";
+import JsonDisplay from "./JsonDisplay";
+import FhirDisplay from "./FhirDisplay";
+import useOcrToFhir from "../hooks/useOcrToFhir";
 
-function FormOcr() {
+export default function FormOcr() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [jsonResult, setJsonResult] = useState(null);
+  const [activeResultTab, setActiveResultTab] = useState("fhir");
   const { fhirData, rawData, processOcrData } = useOcrToFhir();
-
-  const bgColor = useColorModeValue("gray.50", "gray.900");
-  const textColor = useColorModeValue("gray.800", "gray.100");
 
   const handleImageUpload = (file) => {
     setSelectedImage(file);
@@ -42,103 +24,88 @@ function FormOcr() {
   };
 
   return (
-    <Box bg={bgColor} color={textColor} minH="100vh" py={8}>
-      <Container maxW="container.md">
-        <VStack spacing={8} align="stretch">
-          <Box textAlign="center">
-            <Heading as="h1" size="xl" mb={2}>
-              MediLock OCR
-            </Heading>
-            <Text fontSize="lg">
-              Upload an image to extract text and convert it to FHIR format
-            </Text>
-          </Box>
+    <div className="bg-gradient-to-b from-blue-50 to-white py-12">
+      <div className="container mx-auto px-4 max-w-4xl">
+        <div className="flex flex-col space-y-8">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold mb-3 text-blue-800">
+              Medical Document Scanner
+            </h1>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Upload a medical document image to extract information and convert
+              it to structured FHIR format
+            </p>
+          </div>
 
-          <Box
-            borderWidth="1px"
-            borderRadius="lg"
-            p={6}
-            bg={useColorModeValue("white", "gray.800")}
-            shadow="md"
-          >
+          <div className="bg-white rounded-xl p-8 shadow-lg border border-blue-100">
+            <h2 className="text-xl font-semibold mb-4 text-gray-800">
+              Upload Document
+            </h2>
             <ImageUpload onImageUpload={handleImageUpload} />
-          </Box>
+          </div>
 
           {selectedImage && (
-            <Box
-              borderWidth="1px"
-              borderRadius="lg"
-              p={6}
-              bg={useColorModeValue("white", "gray.800")}
-              shadow="md"
-            >
-              <Tabs isFitted variant="enclosed">
-                <TabList mb="1em">
-                  <Tab>OpenAI Direct</Tab>
-                  <Tab>OpenAI via Server</Tab>
-                  <Tab>Tesseract OCR</Tab>
-                </TabList>
-                <TabPanels>
-                  <TabPanel>
-                    <OpenAIProcessor
-                      image={selectedImage}
-                      onOcrComplete={handleOcrComplete}
-                    />
-                  </TabPanel>
-                  <TabPanel>
-                    <OpenAIServerProcessor
-                      image={selectedImage}
-                      onOcrComplete={handleOcrComplete}
-                    />
-                  </TabPanel>
-                  <TabPanel>
-                    <OcrProcessor
-                      image={selectedImage}
-                      onOcrComplete={handleOcrComplete}
-                    />
-                  </TabPanel>
-                </TabPanels>
-              </Tabs>
-            </Box>
+            <div className="bg-white rounded-xl p-8 shadow-lg border border-blue-100">
+              <h2 className="text-xl font-semibold mb-4 text-gray-800">
+                Process Document
+              </h2>
+              <OpenAIProcessor
+                image={selectedImage}
+                onOcrComplete={handleOcrComplete}
+              />
+            </div>
           )}
 
           {(fhirData || jsonResult) && (
-            <Box
-              borderWidth="1px"
-              borderRadius="lg"
-              p={6}
-              bg={useColorModeValue("white", "gray.800")}
-              shadow="md"
-            >
-              <Tabs isFitted variant="enclosed">
-                <TabList mb="1em">
-                  <Tab>FHIR Format</Tab>
-                  <Tab>Raw JSON</Tab>
-                </TabList>
-                <TabPanels>
-                  <TabPanel p={0}>
-                    <FhirDisplay jsonData={fhirData} rawData={rawData} />
-                  </TabPanel>
-                  <TabPanel p={0}>
-                    <JsonDisplay jsonData={jsonResult} />
-                  </TabPanel>
-                </TabPanels>
-              </Tabs>
-            </Box>
+            <div className="bg-white rounded-xl p-8 shadow-lg border border-blue-100">
+              <h2 className="text-xl font-semibold mb-4 text-gray-800">
+                Results
+              </h2>
+
+              <div className="mb-6">
+                <div className="inline-flex rounded-md shadow-sm bg-gray-100 p-1">
+                  <button
+                    className={`px-6 py-2 text-sm font-medium rounded-md transition-all ${
+                      activeResultTab === "fhir"
+                        ? "bg-white text-blue-700 shadow-sm"
+                        : "text-gray-600 hover:text-gray-800"
+                    }`}
+                    onClick={() => setActiveResultTab("fhir")}
+                  >
+                    FHIR Format
+                  </button>
+                  <button
+                    className={`px-6 py-2 text-sm font-medium rounded-md transition-all ${
+                      activeResultTab === "raw"
+                        ? "bg-white text-blue-700 shadow-sm"
+                        : "text-gray-600 hover:text-gray-800"
+                    }`}
+                    onClick={() => setActiveResultTab("raw")}
+                  >
+                    Raw JSON
+                  </button>
+                </div>
+              </div>
+
+              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                {activeResultTab === "fhir" && (
+                  <FhirDisplay jsonData={fhirData} rawData={rawData} />
+                )}
+                {activeResultTab === "raw" && (
+                  <JsonDisplay jsonData={jsonResult} />
+                )}
+              </div>
+            </div>
           )}
 
-          <Divider />
-
-          <Box textAlign="center" opacity={0.7} fontSize="sm">
-            <Text>
-              &copy; {new Date().getFullYear()} MediLock OCR - Text to FHIR
-              Converter
-            </Text>
-          </Box>
-        </VStack>
-      </Container>
-    </Box>
+          <div className="text-center text-gray-500 text-sm mt-8">
+            <p>
+              &copy; {new Date().getFullYear()} MediLock - Secure Medical
+              Records on Blockchain
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
-
-export default FormOcr;
