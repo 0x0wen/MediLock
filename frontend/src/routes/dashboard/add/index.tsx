@@ -270,7 +270,7 @@ function UploadPage() {
   const decryptData = async (encryptedData: { iv: string; data: string }) => {
     try {
       addLog("Starting decryption process...");
-      
+      console.log('encryptedData', encryptedData);
       if (!encryptedData || !encryptedData.iv || !encryptedData.data) {
         throw new Error('Invalid encrypted data format');
       }
@@ -417,7 +417,7 @@ function UploadPage() {
       const uploadResult = {
         ipfs: {
           hash: ipfsResponse.cid,
-          url: `https://ipfs.io/ipfs/${ipfsResponse.cid}`
+          url: `https://${import.meta.env.VITE_PINATA_GATEWAY_URL}/ipfs/${ipfsResponse.cid}`
         },
         blockchain: {
           signature: result.signature,
@@ -453,12 +453,12 @@ function UploadPage() {
       
       // Extract the IPFS hash if it's a URL, or use directly if it's just a hash
       let fetchUrl = ipfsUrl;
-      
+      console.log('fetchUrl', fetchUrl);
       // If this is a gateway URL, use it directly
       // Otherwise construct a fetch URL using a gateway
       if (!fetchUrl.startsWith('http')) {
         // Use a public IPFS gateway
-        fetchUrl = `https://ipfs.io/ipfs/${ipfsUrl}`;
+        fetchUrl = `https://${import.meta.env.VITE_PINATA_GATEWAY_URL}/ipfs/${ipfsUrl}`;
       }
       
       const response = await fetch(fetchUrl);
@@ -468,7 +468,7 @@ function UploadPage() {
       }
       
       addLog("Parsing encrypted data...");
-      const encryptedData = await response.json();
+      const encryptedData = (await response.json()).data;
       
       // Decrypt the fetched data
       addLog("Decrypting fetched data...");
