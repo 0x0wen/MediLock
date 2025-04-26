@@ -1,16 +1,16 @@
 // @ts-nocheck
-// ^ Disable TypeScript checking for this file as there are compatibility 
+// ^ Disable TypeScript checking for this file as there are compatibility
 // issues between the IDL types and Anchor's expected types
 
-import * as web3 from '@solana/web3.js';
-import * as anchor from '@coral-xyz/anchor';
-import { useWallet } from '@solana/wallet-adapter-react';
-import { Medilock, IDL } from './medilock'; // Import the type
-import { PinataSDK } from 'pinata';
-import { Buffer } from 'buffer';
-import {  Program, AnchorProvider, IdlAccounts } from '@coral-xyz/anchor';
+import * as web3 from "@solana/web3.js";
+import * as anchor from "@coral-xyz/anchor";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { Medilock, IDL } from "./medilock"; // Import the type
+import { PinataSDK } from "pinata";
+import { Buffer } from "buffer";
+import { Program, AnchorProvider, IdlAccounts } from "@coral-xyz/anchor";
 // Import the IDL from JSON file
-import idl from './idl/medilock.json';
+import idl from "./idl/medilock.json";
 
 // Define TypeScript interface to match IDL method names with snake_case
 export interface MedilockMethods {
@@ -18,7 +18,7 @@ export interface MedilockMethods {
   request_access: (scope: string, expiration: anchor.BN) => any;
   respond_access: (approved: boolean) => any;
   register: (
-    nik: string, 
+    nik: string,
     full_name: string,
     blood_type: string,
     birthdate: anchor.BN,
@@ -30,27 +30,31 @@ export interface MedilockMethods {
 }
 
 // Constants (moved from backend config.ts)
-export const SOLANA_RPC_URL = import.meta.env.VITE_SOLANA_RPC_URL || 'https://api.devnet.solana.com';
-export const PROGRAM_ID = new web3.PublicKey('BqwVrtrJvBw5GDv8gJkyJpHp1BQc9sq1DexacBNPC3tB');
+export const SOLANA_RPC_URL =
+  import.meta.env.VITE_SOLANA_RPC_URL || "https://api.devnet.solana.com";
+export const PROGRAM_ID = new web3.PublicKey(
+  "7GdfTjDPVuMUxrM42XrVugqCjUSoPdPBtNsZeGfKZRFY"
+);
 
 // Seeds (moved from backend)
-export const USER_SEED = Buffer.from('user');
-export const RECORD_SEED = Buffer.from('record');
-export const ACCESS_SEED = Buffer.from('access');
+export const USER_SEED = Buffer.from("user");
+export const RECORD_SEED = Buffer.from("record");
+export const ACCESS_SEED = Buffer.from("access");
 
 // IPFS gateway URL for reading files
-export const IPFS_GATEWAY_URL = import.meta.env.VITE_IPFS_GATEWAY_URL || 'https://ipfs.io/ipfs/';
+export const IPFS_GATEWAY_URL =
+  import.meta.env.VITE_IPFS_GATEWAY_URL || "https://ipfs.io/ipfs/";
 
 // For pinata API (if you want to keep using it)
-export const PINATA_API_KEY = import.meta.env.VITE_PINATA_API_KEY || '';
-export const PINATA_SECRET_KEY = import.meta.env.VITE_PINATA_SECRET_KEY || '';
+export const PINATA_API_KEY = import.meta.env.VITE_PINATA_API_KEY || "";
+export const PINATA_SECRET_KEY = import.meta.env.VITE_PINATA_SECRET_KEY || "";
 
 // Connection and program
 let connection: web3.Connection;
 
 export function getConnection(): web3.Connection {
   if (!connection) {
-    connection = new web3.Connection(SOLANA_RPC_URL, 'confirmed');
+    connection = new web3.Connection(SOLANA_RPC_URL, "confirmed");
   }
   return connection;
 }
@@ -60,12 +64,14 @@ export function getConnection(): web3.Connection {
 export function getProgram(provider: AnchorProvider) {
   try {
     // Use the latest Anchor package which handles IDL parsing better
-    const programId = new web3.PublicKey("BqwVrtrJvBw5GDv8gJkyJpHp1BQc9sq1DexacBNPC3tB");
+    const programId = new web3.PublicKey(
+      "7GdfTjDPVuMUxrM42XrVugqCjUSoPdPBtNsZeGfKZRFY"
+    );
     const program = new Program(IDL, provider);
-    
+
     return program;
   } catch (error) {
-    console.error('Error initializing program:', error);
+    console.error("Error initializing program:", error);
     throw error;
   }
 }
@@ -77,10 +83,13 @@ export function getUserPDA(publicKey: web3.PublicKey): web3.PublicKey {
   )[0];
 }
 
-export function getRecordPDA(patientPublicKey: web3.PublicKey, counter: number): web3.PublicKey {
+export function getRecordPDA(
+  patientPublicKey: web3.PublicKey,
+  counter: number
+): web3.PublicKey {
   // First derive the patient's account PDA
   const patientAccountPDA = getUserPDA(patientPublicKey);
-  
+
   // Then use the patient account PDA in the record PDA derivation
   return web3.PublicKey.findProgramAddressSync(
     [RECORD_SEED, patientAccountPDA.toBuffer(), Buffer.from([counter])],
@@ -88,7 +97,10 @@ export function getRecordPDA(patientPublicKey: web3.PublicKey, counter: number):
   )[0];
 }
 
-export function getAccessRequestPDA(doctorPublicKey: web3.PublicKey, patientPublicKey: web3.PublicKey): web3.PublicKey {
+export function getAccessRequestPDA(
+  doctorPublicKey: web3.PublicKey,
+  patientPublicKey: web3.PublicKey
+): web3.PublicKey {
   return web3.PublicKey.findProgramAddressSync(
     [ACCESS_SEED, doctorPublicKey.toBuffer(), patientPublicKey.toBuffer()],
     PROGRAM_ID
@@ -96,61 +108,67 @@ export function getAccessRequestPDA(doctorPublicKey: web3.PublicKey, patientPubl
 }
 
 // Common function to create provider from wallet
-export function createProviderFromWallet(wallet: ReturnType<typeof useWallet>): anchor.AnchorProvider {
+export function createProviderFromWallet(
+  wallet: ReturnType<typeof useWallet>
+): anchor.AnchorProvider {
   if (!wallet.publicKey || !wallet.signTransaction) {
     throw new Error("Wallet not connected");
   }
-  
+
   return new anchor.AnchorProvider(
     getConnection(),
     {
       publicKey: wallet.publicKey,
       signTransaction: wallet.signTransaction,
-      signAllTransactions: wallet.signAllTransactions!
+      signAllTransactions: wallet.signAllTransactions!,
     } as anchor.Wallet,
-    { commitment: 'confirmed' }
+    { commitment: "confirmed" }
   );
 }
 
 // Function to check if a wallet is registered as a doctor
-export async function checkIsDoctor(walletPublicKey: web3.PublicKey): Promise<boolean> {
+export async function checkIsDoctor(
+  walletPublicKey: web3.PublicKey
+): Promise<boolean> {
   try {
     if (!walletPublicKey) {
       return false;
     }
-    
+
     const connection = getConnection();
     const userPDA = getUserPDA(walletPublicKey);
-    
+
     // Get account info from the blockchain
     const accountInfo = await connection.getAccountInfo(userPDA);
-    
+
     // If account doesn't exist, user is not registered
     if (!accountInfo) {
       console.log("User account not found");
       return false;
     }
-    
+
     // This is a simplified check - in a real app, you'd properly deserialize the account data
     // For now, we'll check if the account exists and return true to allow testing
     // In a production app, you would deserialize the account data and check the role field
-    
+
     // Create a provider and program instance to properly deserialize the account
     const provider = new anchor.AnchorProvider(
       connection,
       { publicKey: walletPublicKey } as anchor.Wallet,
-      { commitment: 'confirmed' }
+      { commitment: "confirmed" }
     );
-    
+
     const program = new Program(IDL, provider);
-    
+
     try {
       // Try to fetch and deserialize the account
       const userAccount = await program.account.user.fetch(userPDA);
-      console.log('userAccount', userAccount);
+      console.log("userAccount", userAccount);
       // Check if the role is doctor
       // The role field is an enum in the IDL, so we need to check if it has a 'doctor' property
-      return userAccount.role && Object.keys(userAccount.role).includes('doctor');
+      return (
+        userAccount.role && Object.keys(userAccount.role).includes("doctor")
+      );
     } catch (e) {
       console.error("Error deserializing user account:", e);
       return false;
@@ -162,19 +180,22 @@ export async function checkIsDoctor(walletPublicKey: web3.PublicKey): Promise<bo
 }
 
 // Common function to execute a transaction
-async function executeTransaction(tx: web3.Transaction, wallet: ReturnType<typeof useWallet>): Promise<string> {
+async function executeTransaction(
+  tx: web3.Transaction,
+  wallet: ReturnType<typeof useWallet>
+): Promise<string> {
   const connection = getConnection();
-  
+
   if (!wallet.publicKey || !wallet.signTransaction) {
     throw new Error("Wallet not connected");
   }
 
   tx.feePayer = wallet.publicKey;
   tx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
-  
+
   const signedTx = await wallet.signTransaction(tx);
   const signature = await connection.sendRawTransaction(signedTx.serialize());
-  
+
   // Wait for confirmation
   const latestBlockhash = await connection.getLatestBlockhash();
   await connection.confirmTransaction({
@@ -182,7 +203,7 @@ async function executeTransaction(tx: web3.Transaction, wallet: ReturnType<typeo
     lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
     signature: signature,
   });
-  
+
   return signature;
 }
 
@@ -198,45 +219,67 @@ export async function registerUser(
     email: string;
     phone_number: string;
   }
-): Promise<{ success: boolean; signature: string; alreadyRegistered?: boolean }> {
+): Promise<{
+  success: boolean;
+  signature: string;
+  alreadyRegistered?: boolean;
+}> {
   try {
     if (!wallet.publicKey) {
       throw new Error("Wallet not connected");
     }
-    
+
     // Get user PDA
     const userPDA = getUserPDA(wallet.publicKey);
-    
+
     // Check if user account already exists
     const connection = getConnection();
     const accountInfo = await connection.getAccountInfo(userPDA);
-    
+
     // If account already exists, return success without registering again
     if (accountInfo) {
-      console.log("User already registered, account found at:", userPDA.toBase58());
-      return { success: true, signature: "existing_account", alreadyRegistered: true };
+      console.log(
+        "User already registered, account found at:",
+        userPDA.toBase58()
+      );
+      return {
+        success: true,
+        signature: "existing_account",
+        alreadyRegistered: true,
+      };
     }
-    
-    console.log('Registering new user...');
+
+    console.log("Registering new user...");
     const provider = createProviderFromWallet(wallet);
     const program = getProgram(provider);
-    
+
     // Default values for registration if not provided
     const defaultValues = {
       nik: "123456789012345", // 15 digits
       full_name: "Patient User",
       blood_type: "O+",
-      birthdate: new anchor.BN(Math.floor(Date.now() / 1000) - 25 * 365 * 24 * 60 * 60), // 25 years ago
+      birthdate: new anchor.BN(
+        Math.floor(Date.now() / 1000) - 25 * 365 * 24 * 60 * 60
+      ), // 25 years ago
       gender: { male: {} }, // Default to male
       email: "user@example.com",
-      phone_number: "08123456789"
+      phone_number: "08123456789",
     };
-    
+
     // Use provided values or fallback to defaults
     const {
-      nik, full_name, blood_type, birthdate, gender, email, phone_number
+      nik,
+      full_name,
+      blood_type,
+      birthdate,
+      gender,
+      email,
+      phone_number,
     } = userData || defaultValues;
-    
+
+    // Define patient role
+    const patientRole = { patient: {} };
+
     // Create instruction using camelCase as in TypeScript
     // @ts-ignore - TypeScript has issues with account names
     const ix = await program.methods
@@ -247,7 +290,8 @@ export async function registerUser(
         birthdate,
         gender,
         email,
-        phone_number
+        phone_number,
+        patientRole // Add the missing role parameter
       )
       .accounts({
         userAccount: userPDA,
@@ -255,7 +299,7 @@ export async function registerUser(
         systemProgram: web3.SystemProgram.programId,
       })
       .instruction();
-    
+
     // Create and execute transaction
     const tx = new web3.Transaction().add(ix);
     const signature = await executeTransaction(tx, wallet);
@@ -278,17 +322,20 @@ export async function requestAccess(
     if (!wallet.publicKey) {
       throw new Error("Wallet not connected");
     }
-    
+
     const provider = createProviderFromWallet(wallet);
     const program = getProgram(provider);
-    
+
     const patientPubkey = new web3.PublicKey(patientPublicKey);
-    
+
     // Get PDAs
     const doctorPDA = getUserPDA(wallet.publicKey);
     const patientPDA = getUserPDA(patientPubkey);
-    const accessRequestPDA = getAccessRequestPDA(wallet.publicKey, patientPubkey);
-    
+    const accessRequestPDA = getAccessRequestPDA(
+      wallet.publicKey,
+      patientPubkey
+    );
+
     // Use camelCase for method names to match TypeScript interface
     // @ts-ignore - TypeScript has issues with account names
     const ix = await program.methods
@@ -301,11 +348,11 @@ export async function requestAccess(
         systemProgram: web3.SystemProgram.programId,
       })
       .instruction();
-    
+
     // Create and execute transaction
     const tx = new web3.Transaction().add(ix);
     const signature = await executeTransaction(tx, wallet);
-    
+
     console.log("Access request submitted! Signature:", signature);
     return { success: true, signature };
   } catch (error) {
@@ -324,17 +371,20 @@ export async function respondToAccess(
     if (!wallet.publicKey) {
       throw new Error("Wallet not connected");
     }
-    
+
     const provider = createProviderFromWallet(wallet);
     const program = getProgram(provider);
-    
+
     const doctorPubkey = new web3.PublicKey(doctorPublicKey);
-    
+
     // Get PDAs
     const doctorPDA = getUserPDA(doctorPubkey);
     const patientPDA = getUserPDA(wallet.publicKey);
-    const accessRequestPDA = getAccessRequestPDA(doctorPubkey, wallet.publicKey);
-    
+    const accessRequestPDA = getAccessRequestPDA(
+      doctorPubkey,
+      wallet.publicKey
+    );
+
     // Use camelCase for method names to match TypeScript interface
     // @ts-ignore - TypeScript has issues with account names
     const ix = await program.methods
@@ -347,12 +397,15 @@ export async function respondToAccess(
         systemProgram: web3.SystemProgram.programId,
       })
       .instruction();
-    
+
     // Create and execute transaction
     const tx = new web3.Transaction().add(ix);
     const signature = await executeTransaction(tx, wallet);
-    
-    console.log(`Access request ${approved ? 'approved' : 'denied'}! Signature:`, signature);
+
+    console.log(
+      `Access request ${approved ? "approved" : "denied"}! Signature:`,
+      signature
+    );
     return { success: true, signature };
   } catch (error) {
     console.error("Error responding to access request:", error);
@@ -361,28 +414,31 @@ export async function respondToAccess(
 }
 
 const pinata = new PinataSDK({
-    pinataJwt: import.meta.env.VITE_PINATA_JWT!,
-    pinataGateway: import.meta.env.VITE_PINATA_GATEWAY!,
-  });
+  pinataJwt: import.meta.env.VITE_PINATA_JWT!,
+  pinataGateway: import.meta.env.VITE_PINATA_GATEWAY!,
+});
 
-  export async function uploadToIPFS(json: Record<string, any>): Promise<{ url: string; cid: string }> {
-    try {
-      const blob = new Blob([JSON.stringify(json)], { type: 'application/json' });
-      const file = new File([blob], `fhir-encrypted-${Date.now()}.json`, { type: 'application/json' });
-  
-      const upload = await pinata.upload.public.file(file);
-      const ipfsLink = await pinata.gateways.public.convert(upload.cid);
-  
-      return {
-        url: ipfsLink,
-        cid: upload.cid,
-      };
-    } catch (error) {
-      console.error("Error uploading to IPFS:", error);
-      throw error;
-    }
+export async function uploadToIPFS(
+  json: Record<string, any>
+): Promise<{ url: string; cid: string }> {
+  try {
+    const blob = new Blob([JSON.stringify(json)], { type: "application/json" });
+    const file = new File([blob], `fhir-encrypted-${Date.now()}.json`, {
+      type: "application/json",
+    });
+
+    const upload = await pinata.upload.public.file(file);
+    const ipfsLink = await pinata.gateways.public.convert(upload.cid);
+
+    return {
+      url: ipfsLink,
+      cid: upload.cid,
+    };
+  } catch (error) {
+    console.error("Error uploading to IPFS:", error);
+    throw error;
   }
-  
+}
 
 // Add medical record
 export async function addMedicalRecord(
@@ -396,48 +452,54 @@ export async function addMedicalRecord(
     if (!wallet.publicKey) {
       throw new Error("Wallet not connected");
     }
-    
+
     console.log("Adding medical record with:", {
       doctor: wallet.publicKey.toString(),
       patient: patientPublicKey,
       recordCounter,
-      cid
+      cid,
     });
-    
+
     // Create transaction to record on-chain
     const connection = getConnection();
     const provider = createProviderFromWallet(wallet);
     const program = getProgram(provider);
-    
+
     const patientPubkey = new web3.PublicKey(patientPublicKey);
-    
+
     // Get PDAs
     const doctorPDA = getUserPDA(wallet.publicKey);
     const patientPDA = getUserPDA(patientPubkey);
     const recordPDA = getRecordPDA(patientPubkey, recordCounter);
-    
+
     // Check if the doctor account exists
     const doctorAccount = await connection.getAccountInfo(doctorPDA);
     if (!doctorAccount) {
-      throw new Error("Doctor account not found. Please register as a doctor first.");
+      throw new Error(
+        "Doctor account not found. Please register as a doctor first."
+      );
     }
-    
+
     // Check if the patient account exists
     const patientAccount = await connection.getAccountInfo(patientPDA);
     if (!patientAccount) {
-      throw new Error("Patient account not found. The patient must register first.");
+      throw new Error(
+        "Patient account not found. The patient must register first."
+      );
     }
-    
+
     // Check if the record already exists
     const recordAccount = await connection.getAccountInfo(recordPDA);
     if (recordAccount) {
-      throw new Error(`Record with counter ${recordCounter} already exists for this patient. Please use a different counter.`);
+      throw new Error(
+        `Record with counter ${recordCounter} already exists for this patient. Please use a different counter.`
+      );
     }
-    
+
     // Use camelCase for method names to match TypeScript interface
     // and snake_case for the actual program call
     const ix = await program.methods
-      .addRecord(recordCounter, cid, metadata || '')
+      .addRecord(recordCounter, cid, metadata || "")
       .accounts({
         recordAccount: recordPDA,
         doctorAccount: doctorPDA,
@@ -446,11 +508,11 @@ export async function addMedicalRecord(
         systemProgram: web3.SystemProgram.programId,
       })
       .instruction();
-    
+
     // Create and execute transaction
     const tx = new web3.Transaction().add(ix);
     const signature = await executeTransaction(tx, wallet);
-    
+
     console.log("Medical record added! Signature:", signature);
     return { success: true, signature, cid };
   } catch (error) {
@@ -464,11 +526,11 @@ export async function getMedicalRecord(cid: string): Promise<Blob> {
   try {
     // Fetch the file from IPFS gateway
     const response = await fetch(`${IPFS_GATEWAY_URL}${cid}`);
-    
+
     if (!response.ok) {
       throw new Error(`Failed to fetch record: ${response.statusText}`);
     }
-    
+
     return await response.blob();
   } catch (error) {
     console.error("Error fetching medical record:", error);
@@ -485,24 +547,24 @@ export async function getPatientRecords(
     // In a real app, you might query using getProgramAccounts
     // This is a simplified example
     const patientPubkey = new web3.PublicKey(patientPublicKey);
-    
+
     // Get all program accounts of the record type
     const programAccounts = await connection.getProgramAccounts(PROGRAM_ID, {
       filters: [
         // Filter for record accounts (this would need adjustment based on your actual program layout)
-        { memcmp: { offset: 8, bytes: patientPubkey.toBase58() } }
-      ]
+        { memcmp: { offset: 8, bytes: patientPubkey.toBase58() } },
+      ],
     });
-    
+
     // Parse the accounts (you'd need to implement a proper parser)
-    const records = programAccounts.map(account => {
+    const records = programAccounts.map((account) => {
       // This is a placeholder - you'd need actual account data deserialization
       return {
         pubkey: account.pubkey.toString(),
         // ... parse other fields from account.account.data
       };
     });
-    
+
     return records;
   } catch (error) {
     console.error("Error fetching patient records:", error);
@@ -518,24 +580,24 @@ export async function getAccessRequests(
   try {
     // Similar to getPatientRecords, but for access requests
     const patientPubkey = new web3.PublicKey(patientPublicKey);
-    
+
     // Get all program accounts of the access request type
     const programAccounts = await connection.getProgramAccounts(PROGRAM_ID, {
       filters: [
         // Filter for access request accounts (this would need adjustment based on your actual program layout)
-        { memcmp: { offset: 8 + 32, bytes: patientPubkey.toBase58() } }
-      ]
+        { memcmp: { offset: 8 + 32, bytes: patientPubkey.toBase58() } },
+      ],
     });
-    
+
     // Parse the accounts
-    const requests = programAccounts.map(account => {
+    const requests = programAccounts.map((account) => {
       // This is a placeholder - you'd need actual account data deserialization
       return {
         pubkey: account.pubkey.toString(),
         // ... parse other fields from account.account.data
       };
     });
-    
+
     return requests;
   } catch (error) {
     console.error("Error fetching access requests:", error);
@@ -545,24 +607,24 @@ export async function getAccessRequests(
 
 // Additional helper for airdropping SOL for testing (Devnet only)
 export async function requestAirdrop(
-  publicKey: web3.PublicKey, 
+  publicKey: web3.PublicKey,
   amount: number = 1000
 ): Promise<string> {
   try {
-    console.log('requestAirdrop', publicKey.toBase58(), amount);
+    console.log("requestAirdrop", publicKey.toBase58(), amount);
     const connection = getConnection();
     const signature = await connection.requestAirdrop(
       publicKey,
       web3.LAMPORTS_PER_SOL * amount
     );
-    
+
     const latestBlockhash = await connection.getLatestBlockhash();
     await connection.confirmTransaction({
       blockhash: latestBlockhash.blockhash,
       lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
       signature: signature,
     });
-    console.log('requestAirdrop', signature);
+    console.log("requestAirdrop", signature);
     return signature;
   } catch (error) {
     console.error("Error requesting airdrop:", error);
@@ -579,7 +641,7 @@ export async function getAccountData(
   if (!accountInfo) {
     throw new Error("Account not found");
   }
-  
+
   // You'd need proper parsing of the account data here
   // This would depend on your specific account structures
   return accountInfo;
