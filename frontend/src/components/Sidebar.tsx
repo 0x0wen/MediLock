@@ -20,13 +20,12 @@ const Sidebar = () => {
       if (connected && publicKey) {
         const checkUser = async () => {
           const userPDA = getUserPDA(publicKey);
-          const connection = new web3.Connection(web3.clusterApiUrl('devnet'), 'confirmed');
-          const accountInfo = await connection.getAccountInfo(userPDA);
-          if(accountInfo) {
+          if(userPDA) {
               setHasAccount(true);
               navigate({ to: '/dashboard' });
           } else {
               setHasAccount(false);
+              navigate({ to: '/register' });
           }
         };
         checkUser();

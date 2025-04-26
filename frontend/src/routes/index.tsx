@@ -130,52 +130,6 @@ function HomePage() {
             </div>
           )}
         </div>
-        
-        {/* About EMR Security */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <h2 className="text-xl font-semibold mb-4">About Secure EMR on Solana</h2>
-          <div className="prose">
-            <p>
-              This application demonstrates a secure way to store Electronic Medical Records (EMR) 
-              using blockchain technology and client-side encryption:
-            </p>
-            <ul className="list-disc pl-5 mt-2 space-y-1">
-              <li>Connect your wallet to establish your identity</li>
-              <li>Register as a patient on the blockchain</li>
-              <li>Encrypt medical records with your wallet's keys</li>
-              <li>Store encrypted data on IPFS with blockchain references</li>
-              <li>Only authorized users can access and decrypt information</li>
-            </ul>
-          </div>
-        </div>
-        
-        {/* Logs Section */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-4">Process Logs</h2>
-          <div className="h-48 overflow-auto p-3 border border-gray-300 rounded-md bg-black text-white font-mono">
-            {logs.length === 0 ? (
-              <p className="text-gray-500">Logs will appear here as you perform actions</p>
-            ) : (
-              logs.map((log, index) => (
-                <div key={index} className={`text-sm mb-1 ${
-                  log.type === 'error' ? 'text-red-400' : 
-                  log.type === 'success' ? 'text-green-400' : 
-                  log.type === 'warning' ? 'text-yellow-400' :
-                  'text-gray-300'
-                }`}>
-                  [{log.timestamp}] {log.message}
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-
-        {/* Error Message */}
-        {error && (
-          <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-md">
-            {error}
-          </div>
-        )}
       </div>
     </div>
   );
