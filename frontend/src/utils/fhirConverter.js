@@ -260,8 +260,8 @@ const createMedicationRequests = (data, patientId, encounterId) => {
         ? data.medications
         : [data.medications]
       : Array.isArray(data.medication)
-      ? data.medication
-      : [data.medication];
+        ? data.medication
+        : [data.medication];
 
     medsArray.forEach((med) => {
       if (typeof med === "string") {

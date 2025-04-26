@@ -15,16 +15,14 @@ import {
   AlertTitle,
   AlertDescription,
   CloseButton,
-  Switch,
 } from "@chakra-ui/react";
+import { OPENAI_API_KEY, SERVER_URL } from "../config";
 
 const OpenAIServerProcessor = ({ image, onOcrComplete }) => {
   const [progress, setProgress] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [apiKey, setApiKey] = useState("");
-  const [showApiKeyInput, setShowApiKeyInput] = useState(false);
   const [error, setError] = useState(null);
-  const [serverUrl, setServerUrl] = useState("http://localhost:3000");
+  const [serverUrl, setServerUrl] = useState(SERVER_URL);
   const [showServerConfig, setShowServerConfig] = useState(false);
   const toast = useToast();
 
@@ -37,11 +35,6 @@ const OpenAIServerProcessor = ({ image, onOcrComplete }) => {
         duration: 3000,
         isClosable: true,
       });
-      return;
-    }
-
-    if (!apiKey) {
-      setShowApiKeyInput(true);
       return;
     }
 
@@ -100,6 +93,20 @@ const OpenAIServerProcessor = ({ image, onOcrComplete }) => {
     try {
       // Use the configured server URL or default
       const url = `${serverUrl}/api/vision`;
+
+      // Use the predefined API key
+      const apiKey = OPENAI_API_KEY;
+
+      // Validate API key
+      if (
+        !apiKey ||
+        !apiKey.startsWith("sk-") ||
+        apiKey === "YOUR_OPENAI_API_KEY_HERE"
+      ) {
+        throw new Error(
+          "Invalid API key. Please update the predefined API key in the code."
+        );
+      }
 
       const response = await fetch(url, {
         method: "POST",
@@ -233,22 +240,6 @@ const OpenAIServerProcessor = ({ image, onOcrComplete }) => {
     return result;
   };
 
-  const handleApiKeySubmit = () => {
-    if (!apiKey.trim()) {
-      toast({
-        title: "API Key Required",
-        description: "Please enter your OpenAI API key",
-        status: "warning",
-        duration: 3000,
-        isClosable: true,
-      });
-      return;
-    }
-
-    setShowApiKeyInput(false);
-    processImage();
-  };
-
   const toggleServerConfig = () => {
     setShowServerConfig(!showServerConfig);
   };
@@ -294,23 +285,7 @@ const OpenAIServerProcessor = ({ image, onOcrComplete }) => {
         </FormControl>
       )}
 
-      {showApiKeyInput ? (
-        <FormControl>
-          <FormLabel>Enter your OpenAI API Key</FormLabel>
-          <Input
-            type="password"
-            value={apiKey}
-            onChange={(e) => setApiKey(e.target.value)}
-            placeholder="sk-..."
-          />
-          <Button mt={2} colorScheme="blue" onClick={handleApiKeySubmit}>
-            Submit
-          </Button>
-          <Text fontSize="xs" mt={1} color="gray.500">
-            Your API key is used only for this request and is not stored.
-          </Text>
-        </FormControl>
-      ) : isProcessing ? (
+      {isProcessing ? (
         <Box w="100%">
           <Text mb={2}>Processing image... {progress}%</Text>
           <Progress value={progress} size="sm" colorScheme="blue" />
@@ -327,9 +302,8 @@ const OpenAIServerProcessor = ({ image, onOcrComplete }) => {
       )}
 
       <Text fontSize="sm" color="gray.500" textAlign="center">
-        Note: This method requires a running proxy server with GPT-4o model
-        support. Run "npm run server" in a terminal to start the server before
-        using this option.
+        This method requires a running proxy server. Run "npm run server" in a
+        terminal to start the server before using this option.
       </Text>
     </VStack>
   );

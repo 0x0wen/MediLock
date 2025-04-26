@@ -17,13 +17,11 @@ import {
   AlertDescription,
   CloseButton,
 } from "@chakra-ui/react";
-
+import { OPENAI_API_KEY } from "../config";
 
 const OpenAIProcessor = ({ image, onOcrComplete }) => {
   const [progress, setProgress] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [apiKey, setApiKey] = useState("");
-  const [showApiKeyInput, setShowApiKeyInput] = useState(false);
   const [error, setError] = useState(null);
   const toast = useToast();
 
@@ -36,11 +34,6 @@ const OpenAIProcessor = ({ image, onOcrComplete }) => {
         duration: 3000,
         isClosable: true,
       });
-      return;
-    }
-
-    if (!apiKey) {
-      setShowApiKeyInput(true);
       return;
     }
 
@@ -106,10 +99,17 @@ const OpenAIProcessor = ({ image, onOcrComplete }) => {
 
   const callOpenAIVisionAPI = async (dataUrl) => {
     try {
+      // Use the predefined API key
+      const apiKey = OPENAI_API_KEY;
+
       // Validate API key format (simple validation)
-      if (!apiKey.startsWith("sk-")) {
+      if (
+        !apiKey ||
+        !apiKey.startsWith("sk-") ||
+        apiKey === ""
+      ) {
         throw new Error(
-          "Invalid API key format. OpenAI API keys start with 'sk-'"
+          "Invalid API key. Please update the predefined API key in the code."
         );
       }
 
@@ -261,22 +261,6 @@ const OpenAIProcessor = ({ image, onOcrComplete }) => {
     return result;
   };
 
-  const handleApiKeySubmit = () => {
-    if (!apiKey.trim()) {
-      toast({
-        title: "API Key Required",
-        description: "Please enter your OpenAI API key",
-        status: "warning",
-        duration: 3000,
-        isClosable: true,
-      });
-      return;
-    }
-
-    setShowApiKeyInput(false);
-    processImage();
-  };
-
   return (
     <VStack spacing={4} w="100%">
       <Heading size="md">OpenAI Vision Processing</Heading>
@@ -297,23 +281,7 @@ const OpenAIProcessor = ({ image, onOcrComplete }) => {
         </Alert>
       )}
 
-      {showApiKeyInput ? (
-        <FormControl>
-          <FormLabel>Enter your OpenAI API Key</FormLabel>
-          <Input
-            type="password"
-            value={apiKey}
-            onChange={(e) => setApiKey(e.target.value)}
-            placeholder="sk-..."
-          />
-          <Button mt={2} colorScheme="blue" onClick={handleApiKeySubmit}>
-            Submit
-          </Button>
-          <Text fontSize="xs" mt={1} color="gray.500">
-            Your API key is used only for this request and is not stored.
-          </Text>
-        </FormControl>
-      ) : isProcessing ? (
+      {isProcessing ? (
         <Box w="100%">
           <Text mb={2}>Processing image... {progress}%</Text>
           <Progress value={progress} size="sm" colorScheme="blue" />
@@ -330,9 +298,8 @@ const OpenAIProcessor = ({ image, onOcrComplete }) => {
       )}
 
       <Text fontSize="sm" color="gray.500" textAlign="center">
-        Note: This component makes API calls directly to OpenAI using the GPT-4o
-        model. If you experience issues, try using a smaller image (under 20MB)
-        or check your API key.
+        This component uses OpenAI's GPT-4o model for image text extraction. For
+        best results, use clear images with readable text.
       </Text>
     </VStack>
   );

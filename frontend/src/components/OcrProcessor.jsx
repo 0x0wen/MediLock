@@ -9,6 +9,7 @@ import {
   useToast,
   Heading,
 } from "@chakra-ui/react";
+import { TESSERACT_LANGUAGE } from "../config";
 
 const OcrProcessor = ({ image, onOcrComplete }) => {
   const [progress, setProgress] = useState(0);
@@ -44,8 +45,8 @@ const OcrProcessor = ({ image, onOcrComplete }) => {
       });
 
       await worker.load();
-      await worker.loadLanguage("eng");
-      await worker.initialize("eng");
+      await worker.loadLanguage(TESSERACT_LANGUAGE);
+      await worker.initialize(TESSERACT_LANGUAGE);
 
       // Use the image URL instead of the File object
       const { data } = await worker.recognize(imageUrl);
