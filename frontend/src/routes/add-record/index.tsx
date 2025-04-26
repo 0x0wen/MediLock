@@ -19,6 +19,7 @@ import {
 } from "lucide-react"
 import { FHIRForm } from "@/components/fhir-form"
 import { Badge } from "@/components/ui/badge"
+import FormOcr from "@/components/FormOcr"
 
 // Define the route
 export const Route = createFileRoute('/add-record/')({

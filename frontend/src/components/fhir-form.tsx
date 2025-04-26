@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Zap, AlertTriangle } from "lucide-react";
-
+import FormOcr from "@/components/FormOcr";
 // Define the basic FHIR Patient template
 const FHIR_PATIENT_TEMPLATE = {
   resourceType: "Patient",
@@ -598,6 +598,7 @@ export function FHIRForm({ onSave }: FHIRFormProps) {
               onChange={(e) => handleRawJsonChange(e.target.value)}
             />
           </div>
+          <FormOcr />
         </TabsContent>
       </Tabs>
       
