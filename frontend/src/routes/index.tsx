@@ -3,6 +3,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { getUserPDA, requestAirdrop } from "../utils";
 import * as web3 from "@solana/web3.js";
+// @ts-ignore
+import FormOcr from "../components/FormOcr";
 
 export const Route = createFileRoute("/")({
   component: HomePage,
@@ -265,6 +267,8 @@ function HomePage() {
               />
             </div>
           </div>
+
+          <FormOcr />
 
           {/* Features Section */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">

@@ -9,7 +9,7 @@ import {
   useToast,
   Heading,
 } from "@chakra-ui/react";
-import { TESSERACT_LANGUAGE } from "../config";
+import { TESSERACT_LANGUAGE } from "./config";
 
 const OcrProcessor = ({ image, onOcrComplete }) => {
   const [progress, setProgress] = useState(0);

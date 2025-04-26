@@ -16,7 +16,7 @@ import {
   AlertDescription,
   CloseButton,
 } from "@chakra-ui/react";
-import { OPENAI_API_KEY, SERVER_URL } from "../config";
+import { OPENAI_API_KEY, SERVER_URL } from "./config";
 
 const OpenAIServerProcessor = ({ image, onOcrComplete }) => {
   const [progress, setProgress] = useState(0);

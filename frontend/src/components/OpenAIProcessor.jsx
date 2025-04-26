@@ -1,39 +1,14 @@
 import { useState } from "react";
-import {
-  Box,
-  Button,
-  VStack,
-  Text,
-  Progress,
-  useToast,
-  Heading,
-  Textarea,
-  FormControl,
-  FormLabel,
-  Input,
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  AlertDescription,
-  CloseButton,
-} from "@chakra-ui/react";
-import { OPENAI_API_KEY } from "../config";
+import { OPENAI_API_KEY } from "./config";
 
 const OpenAIProcessor = ({ image, onOcrComplete }) => {
   const [progress, setProgress] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState(null);
-  const toast = useToast();
 
   const processImage = async () => {
     if (!image) {
-      toast({
-        title: "No image selected",
-        description: "Please upload an image first.",
-        status: "warning",
-        duration: 3000,
-        isClosable: true,
-      });
+      alert("Please upload an image first.");
       return;
     }
 
@@ -64,13 +39,10 @@ const OpenAIProcessor = ({ image, onOcrComplete }) => {
         const jsonResult = processTextToJson(response.text);
         onOcrComplete(jsonResult);
 
-        toast({
-          title: "Processing completed",
-          description: "Text has been extracted and converted to JSON.",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-        });
+        // Success notification
+        console.log(
+          "Processing completed: Text has been extracted and converted to JSON."
+        );
       } else {
         throw new Error("Failed to process image. No text was extracted.");
       }
@@ -103,11 +75,7 @@ const OpenAIProcessor = ({ image, onOcrComplete }) => {
       const apiKey = OPENAI_API_KEY;
 
       // Validate API key format (simple validation)
-      if (
-        !apiKey ||
-        !apiKey.startsWith("sk-") ||
-        apiKey === ""
-      ) {
+      if (!apiKey || !apiKey.startsWith("sk-") || apiKey === "") {
         throw new Error(
           "Invalid API key. Please update the predefined API key in the code."
         );
@@ -262,46 +230,66 @@ const OpenAIProcessor = ({ image, onOcrComplete }) => {
   };
 
   return (
-    <VStack spacing={4} w="100%">
-      <Heading size="md">OpenAI Vision Processing</Heading>
+    <div className="flex flex-col space-y-4 w-full">
+      <h3 className="text-lg font-medium text-gray-800">
+        OpenAI Vision Processing
+      </h3>
 
       {error && (
-        <Alert status="error" variant="solid" borderRadius="md">
-          <AlertIcon />
-          <Box flex="1">
-            <AlertTitle>Error</AlertTitle>
-            <AlertDescription display="block">{error}</AlertDescription>
-          </Box>
-          <CloseButton
-            position="absolute"
-            right="8px"
-            top="8px"
+        <div
+          className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+          role="alert"
+        >
+          <strong className="font-bold">Error: </strong>
+          <span className="block sm:inline">{error}</span>
+          <button
+            className="absolute top-0 bottom-0 right-0 px-4 py-3"
             onClick={() => setError(null)}
-          />
-        </Alert>
+          >
+            <span className="text-red-500">&times;</span>
+          </button>
+        </div>
       )}
 
       {isProcessing ? (
-        <Box w="100%">
-          <Text mb={2}>Processing image... {progress}%</Text>
-          <Progress value={progress} size="sm" colorScheme="blue" />
-        </Box>
+        <div className="w-full">
+          <p className="mb-2 text-sm">Processing image... {progress}%</p>
+          <div className="w-full bg-gray-200 rounded-full h-2.5">
+            <div
+              className="bg-blue-600 h-2.5 rounded-full"
+              style={{ width: `${progress}%` }}
+            ></div>
+          </div>
+        </div>
       ) : (
-        <Button
-          colorScheme="blue"
+        <button
+          className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium py-3 px-4 rounded-lg shadow transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
           onClick={processImage}
-          isDisabled={!image}
-          w="100%"
+          disabled={!image}
         >
+          <svg
+            className="w-5 h-5 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M13 10V3L4 14h7v7l9-11h-7z"
+            ></path>
+          </svg>
           Process with OpenAI Vision
-        </Button>
+        </button>
       )}
 
-      <Text fontSize="sm" color="gray.500" textAlign="center">
+      <p className="text-sm text-gray-500 text-center">
         This component uses OpenAI's GPT-4o model for image text extraction. For
         best results, use clear images with readable text.
-      </Text>
-    </VStack>
+      </p>
+    </div>
   );
 };
 
