@@ -9,7 +9,7 @@ pub use constants::*;
 pub use instructions::*;
 pub use state::*;
 
-declare_id!("BqwVrtrJvBw5GDv8gJkyJpHp1BQc9sq1DexacBNPC3tB");
+declare_id!("7GdfTjDPVuMUxrM42XrVugqCjUSoPdPBtNsZeGfKZRFY);
 
 #[program]
 pub mod medilock {
