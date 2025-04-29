@@ -1,6 +1,20 @@
-# MediLock
+# 🏆 3rd Winner for JIHS 2025 Hackathon - MediLock
 
-MediLock is a blockchain-based electronic medical record (EMR) system built on Solana that empowers patients to securely store, manage, and share their medical data with healthcare providers.
+MediLock is a blockchain-based electronic medical record (EMR) system built on Solana that empowers patients to securely store, manage, and share their medical data with healthcare providers. MediLock also enable patients to monetize their data anonymously. 
+
+## 🗺️ Architecture
+![test](docs/architecture.png)
+
+## 🖥️ Preview
+### Medical Records Archive
+![test](docs/records.png)
+
+### Data Access Control
+![test](docs/access.png)
+
+### Anonymous Data Marketplace
+![test](docs/marketplace.png)
+
 
 ## 🔒 Key Features
 
@@ -11,7 +25,7 @@ MediLock is a blockchain-based electronic medical record (EMR) system built on S
 - **FHIR Compatibility**: Supports industry-standard healthcare data formats
 - **Simple Interface**: User-friendly dashboard for both patients and healthcare providers
 
-## 🏥 How It Works
+## ❓ How It Works
 
 ### For Patients
 
